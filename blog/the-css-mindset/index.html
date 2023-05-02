@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<!--!
+  Oh so you're an inspector?
+  View the source here: https://github.com/maxboeck/mxb
+-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>The CSS Mindset | Max Böck</title>
+        <link rel="preload" href="/assets/fonts/noe-display-medium.woff2" as="font" type="font/woff2" crossorigin>
+        <link rel="preconnect" href="https://webmention.io">
+
+        <link rel="stylesheet" href="/assets/styles/themes.css">
+        <link rel="stylesheet" href="/assets/styles/main.css">
+
+        
+
+<meta name="description" content="CSS can be difficult to grasp if you think about it in terms of a &quot;traditional&quot; programming language. There is a certain mindset involved that helps to understand why it works the way it does."><meta name="image" content="https://mxb.dev/blog/the-css-mindset/cover.jpg"><meta property="og:title" content="The CSS Mindset">
+<meta property="og:description" content="CSS can be difficult to grasp if you think about it in terms of a &quot;traditional&quot; programming language. There is a certain mindset involved that helps to understand why it works the way it does.">
+<meta property="og:url" content="https://mxb.dev/blog/the-css-mindset/">
+<meta property="og:image" content="https://mxb.dev/blog/the-css-mindset/cover.jpg">
+<meta name="twitter:card" content="summary_large_image">
+
+<meta property="og:type" content="article">
+    <meta property="article:published_time" content="2019-06-05T00:00:00">
+<meta name="author" content="Max Böck">
+<meta property="og:site_name" content="Max Böck">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:site" content="@mxbck">
+<meta name="twitter:creator" content="@mxbck">
+<meta property="fb:app_id" content="127677017332959">
+
+<link rel="canonical" href="https://mxb.dev/blog/the-css-mindset/">
+
+
+<script type="application/ld+json">
+    {
+        "name":"Max Böck",
+        "description":"Max Böck is a professional front-end developer based in Vienna, Austria.",
+        "author": {
+            "@type":"Person",
+            "name":"Max Böck"
+        },
+        "@type":"WebSite",
+        "url":"https://mxb.dev",
+        "image":"https://mxb.dev/assets/images/avatar2.jpg",
+        "headline":"Max Böck",
+        "sameAs":[
+            "https://twitter.com/mxbck",
+            "https://github.com/maxboeck"
+        ],
+        "@context":"http://schema.org"
+    }
+</script>
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/images/favicon/apple-touch-icon.png?v=1">
+<link rel="icon" type="image/png" href="/assets/images/favicon/favicon-32x32.png?v=1" sizes="32x32">
+<link rel="icon" type="image/png" href="/assets/images/favicon/favicon-16x16.png?v=1" sizes="16x16">
+<link rel="mask-icon" href="/assets/images/favicon/safari-pinned-tab.svg?v=1" color="#1a1a1a">
+<link rel="shortcut icon" href="/assets/images/favicon/favicon.ico?v=1">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#1a1a1a">
+
+
+<link type="application/atom+xml" rel="alternate" href="https://mxb.dev/feed.xml" title="Max Böck">
+<link type="application/atom+xml" rel="alternate" href="https://mxb.dev/notes/feed.xml" title="Max Böck | Notes">
+
+
+<link rel="authorization_endpoint" href="https://indieauth.com/auth" />
+<link rel="token_endpoint" href="https://tokens.indieauth.com/token" />
+<meta name="monetization" content="$ilp.uphold.com/7qZLaNKjDa87">
+
+
+<link rel="pingback" href="https://webmention.io/mxb.dev/xmlrpc">
+<link rel="webmention" href="https://webmention.io/mxb.dev/webmention">
+        <script>(function() {
+    var theme = localStorage.getItem('theme');
+    window.metaColors = {'default':'#f7f7f9','dark':'#252526','beach':'#e3f6f5','choco':'#41312E','moomoo':'#f3e1d8','bowser':'#29293e','yoshi':'#f2ede9','rainbow':'#311b46','lobster':'#ffb9ad','hackernews':'#F8F8EC'};
+    if (theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', window.metaColors[theme]);
+    }
+})();</script>
+    </head>
+    <body>
+        <a href="#main" class="sr-skip-link">skip to main content</a>
+        <div class="titlebar">
+    <div class="titlebar__inner"></div>
+</div>
+
+        <div class="hfeed layout" role="document">
+            <div class="themepicker js-themepicker" data-nosnippet hidden>
+    <h3 class="themepicker__title">Select Theme</h3>
+    <ul class="themepicker__list" id="theme-menu">
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Classic'" 
+                data-theme="default" 
+            >
+                <span class="themepicker__name">Classic</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Dark'" 
+                data-theme="dark" 
+            >
+                <span class="themepicker__name">Dark</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Koopa Beach'" 
+                data-theme="beach" 
+            >
+                <span class="themepicker__name">Koopa Beach</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Choco Mountain'" 
+                data-theme="choco" 
+            >
+                <span class="themepicker__name">Choco Mountain</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Moo Moo Farm'" 
+                data-theme="moomoo" 
+            >
+                <span class="themepicker__name">Moo Moo Farm</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Bowser&#39;s Castle'" 
+                data-theme="bowser" 
+            >
+                <span class="themepicker__name">Bowser&#39;s Castle</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Yoshi Valley'" 
+                data-theme="yoshi" 
+            >
+                <span class="themepicker__name">Yoshi Valley</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Rainbow Road'" 
+                data-theme="rainbow" 
+            >
+                <span class="themepicker__name">Rainbow Road</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Lobster Life'" 
+                data-theme="lobster" 
+            >
+                <span class="themepicker__name">Lobster Life</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Hacker News'" 
+                data-theme="hackernews" 
+            >
+                <span class="themepicker__name">Hacker News</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+    </ul>
+    <button class="iconbtn themepicker__close js-themepicker-close">
+        <span class="sr-only">close themepicker</span>
+        <svg class="icon icon--close" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-close"></use></svg>
+    </button>
+</div>
+            <header class="header" role="banner">
+    <div class="header__inner container">
+
+        <a class="header__brand" href="/" rel="home">
+            <img class="header__avatar" src="data:image/jpeg;base64,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" width="48" height="48" alt="" />
+            <span class="header__name">
+                <span>Max Böck</span>
+                <span class="header__verification" aria-hidden="true">
+                    <svg class="icon icon--verified" version="1.1" viewBox="0,0,24,24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.71-3.998-3.818-3.998-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.437 2.25c-.415-.165-.866-.25-1.336-.25-2.11 0-3.818 1.79-3.818 4 0 .494.083.964.237 1.4-1.272.65-2.147 2.018-2.147 3.6 0 1.495.782 2.798 1.942 3.486-.02.17-.032.34-.032.514 0 2.21 1.708 4 3.818 4 .47 0 .92-.086 1.335-.25.62 1.334 1.926 2.25 3.437 2.25 1.512 0 2.818-.916 3.437-2.25.415.163.865.248 1.336.248 2.11 0 3.818-1.79 3.818-4 0-.174-.012-.344-.033-.513 1.158-.687 1.943-1.99 1.943-3.484zm-6.616-3.334l-4.334 6.5c-.145.217-.382.334-.625.334-.143 0-.288-.04-.416-.126l-.115-.094-2.415-2.415c-.293-.293-.293-.768 0-1.06s.768-.294 1.06 0l1.77 1.767 3.825-5.74c.23-.345.696-.436 1.04-.207.346.23.44.696.21 1.04z"/>
+                    </svg>
+                </span>
+            </span>
+        </a>
+
+        <div class="header__nav">
+            <nav class="nav js-nav" role="navigation" tabindex="-1">
+
+    
+    <button
+        class="iconbtn nav__togglebtn js-nav-toggle"
+        aria-expanded="false"
+        aria-controls="nav-menu"
+        aria-label="toggle menu"
+    >
+        <span class="menuicon">
+            <span class="menuicon__bar"></span>
+            <span class="menuicon__bar"></span>
+            <span class="menuicon__bar"></span>
+            <span class="menuicon__bar"></span>
+        </span>
+    </button>
+
+    
+    <div class="nav__content">
+        <ul class="nav__menu js-nav-menu" id="nav-menu"><li class="nav__item">
+                    <a
+                        href="/"
+                        class="nav__link"
+                        
+                    >
+                        <span class="nav__num" aria-hidden="true">01</span>
+                        Home
+                    </a>
+                </li><li class="nav__item nav__item--active">
+                    <a
+                        href="/blog/"
+                        class="nav__link"
+                        
+                    >
+                        <span class="nav__num" aria-hidden="true">02</span>
+                        Writing
+                    </a>
+                </li><li class="nav__item">
+                    <a
+                        href="/notes/"
+                        class="nav__link"
+                        
+                    >
+                        <span class="nav__num" aria-hidden="true">03</span>
+                        Notes
+                    </a>
+                </li><li class="nav__item">
+                    <a
+                        href="/about/"
+                        class="nav__link"
+                        
+                    >
+                        <span class="nav__num" aria-hidden="true">04</span>
+                        About
+                    </a>
+                </li></ul>
+    </div>
+    
+    
+    <div class="nav__bg">
+        <div class="nav__bg__circle"></div>
+    </div>
+
+</nav>
+
+            <button
+                class="iconbtn header__themebtn js-themepicker-toggle"
+                aria-expanded="false"
+                aria-controls="theme-menu"
+            >
+                <span class="sr-only">toggle theme panel</span>
+                <svg class="icon icon--theme" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true">
+                    <path d="M18 4V3c0-.55-.45-1-1-1H5c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h12c.55 0 1-.45 1-1V6h1v4H9v11c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-9h8V4h-3z"/>
+                </svg>
+            </button>
+        </div>
+
+    </div>
+</header>
+
+            <main class="main container" role="main" id="main" tabindex="-1">
+                <article 
+    id="the-css-mindset" 
+    class="post h-entry" 
+    role="article" 
+    itemscope 
+    itemtype="http://schema.org/BlogPosting" 
+    aria-labelledby="the-css-mindset-title" 
+>
+    <header class="post__header">
+        <h1 id="the-css-mindset-title" class="post__title p-name title" itemprop="headline">The CSS Mindset</h1>
+        <div class="post__meta">
+
+            <p >
+                <time class="post__date dt-published" itemprop="datePublished" datetime="2019-06-05T00:00:00">05 Jun 2019</time>
+                
+                <span aria-label="in category">&sdot;</span> <span class="post__tags p-category">code</span>
+                
+                
+            </p>
+
+            
+
+        </div>
+    </header>
+
+    <div class="post__content e-content markdown" itemprop="articleBody">
+        <p class="lead">Ah yes, CSS. Hardly a week passes without it being the topic of a heated online discussion. It's too hard. It's too simple. It's unpredictable. It's not a real programming language. Peter Griffin struggles with blinds dot gif.</p>
+<p>I don’t know why CSS sparks so many different emotions in developers, but I have a hunch as to why it can sometimes seem illogical or frustrating: You need a certain <strong>mindset</strong> to write good CSS.</p>
+<p>Now, you probably need a mindset for coding in general, but the declarative nature of CSS makes it particularly difficult to grasp, especially if you think about it in terms of a “traditional” programming language.</p>
+<p>Robin Rendle makes a very good point in this <a href="https://css-tricks.com/newsletter/151/">CSS-Tricks Newsletter</a> where he finds that CSS lives somewhere between rigid, logical systems like Math and flexible, adaptive systems like natural languages:</p>
+<figure>
+    <img src="css-math-language.jpg" alt="a diagram with three boxes on an axis. the first box lists properties of mathematics: rigid; emperical; logical. The last says natural language is flexible; adaptive; illogical. CSS sits in between.">
+    <figcaption>Comparison of Math, CSS and Language by <a href="https://www.robinrendle.com/">Robin Rendle</a>, 2019</figcaption>
+</figure>
+<p>Other programming languages often work in controlled environments, like servers. They expect certain conditions to be true at all times, and can therefore be understood as concrete instructions as to how a program should execute.</p>
+<p>CSS on the other hand works in a place that can never be fully controlled, so it has to be flexible by default. It’s less about “programming the appearance” and more about translating a design into a set of rules that communicate the intent behind it. Leave enough room, and the browser will do the heavy lifting for you.</p>
+<p>For most people who write CSS professionally, the mindset just comes naturally after a while. Many developers have that “aha!” moment when things finally start to click. It’s not just about knowing all the technical details, it’s more about a general sense of the ideas behind the language.</p>
+<p>This is true whether you write CSS-in-JS, Sass or plain vanilla stylesheets. The output will always be CSS - so knowing these concepts will be helpful regardless of your tooling choice.</p>
+<p>I tried to list some of them here.</p>
+<h2 id="h-everything-is-a-rectangle"><a class="heading-anchor" href="#h-everything-is-a-rectangle" aria-hidden="true">#</a> Everything is a Rectangle</h2>
+<p>This seems obvious, given that the box model is probably one of the first things people learn about CSS. But picturing each DOM element as a box is crucial to understanding why things layout the way they do. Is it inline or block level? Is it a flex item? How will it grow/shrink/wrap in different contexts?</p>
+<div class="callout callout--tip"><span class="callout__icon"><svg class="icon icon--lightbulb" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-lightbulb"></use></svg></span><div class="callout__content"><p>Open your devtools and hover over elements to see the boxes they're drawing, or use a utility style like <code>outline: 2px dotted hotpink</code> to visualize its hidden boundaries.</p></div></div>
+<h2 id="h-the-cascade-is-your-friend"><a class="heading-anchor" href="#h-the-cascade-is-your-friend" aria-hidden="true">#</a> The Cascade is your Friend</h2>
+<p>The Cascade - a scary concept, I know. Say “Cascade” three times in front of a mirror and somewhere, some unrelated styling will break.</p>
+<p>While there are legitimate reasons to avoid the cascade, it doesn’t mean that it’s all bad. In fact, when used correctly, it can make your life a lot easier.</p>
+<div class="callout callout--tip"><span class="callout__icon"><svg class="icon icon--lightbulb" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-lightbulb"></use></svg></span><div class="callout__content"><p>The important part is to know which styles belong on the global scope and which are better restricted to a component. It also helps to know the defaults that are passed down, to avoid declaring unnecessary rules.</p></div></div>
+<h2 id="h-as-much-as-necessary-as-little-as-possible"><a class="heading-anchor" href="#h-as-much-as-necessary-as-little-as-possible" aria-hidden="true">#</a> As much as necessary, as little as possible</h2>
+<p>Aim to write the minimal amount of rules necessary to achieve a design. Fewer properties mean less inheritance, less restriction and less trouble with overrides down the line. Think about what your selector should essentially do, then try to express just that. There’s no point in declaring <code>width: 100%</code> on an element that’s already block-level. There’s no need to set <code>position: relative</code> if you don’t need a new stacking context.</p>
+<div class="callout callout--tip"><span class="callout__icon"><svg class="icon icon--lightbulb" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-lightbulb"></use></svg></span><div class="callout__content"><p>Avoid unnecessary styles, and you avoid unintended consequences.</p></div></div>
+<h2 id="h-shorthands-have-long-effects"><a class="heading-anchor" href="#h-shorthands-have-long-effects" aria-hidden="true">#</a> Shorthands have long effects</h2>
+<p>Some CSS features can be written in “shorthand” notation. This makes it possible to declare a bunch of related properties together. While this is handy, be aware that using the shorthand will also declare the default value for each property you don’t explicitly set. Writing <code>background: white;</code> will effectively result in all these properties being set:</p>
+<pre class="language-css"><code class="language-css"><span class="token property">background-color</span><span class="token punctuation">:</span> white<span class="token punctuation">;</span><br><span class="token property">background-image</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span><br><span class="token property">background-position</span><span class="token punctuation">:</span> 0% 0%<span class="token punctuation">;</span><br><span class="token property">background-size</span><span class="token punctuation">:</span> auto auto<span class="token punctuation">;</span><br><span class="token property">background-repeat</span><span class="token punctuation">:</span> repeat<span class="token punctuation">;</span><br><span class="token property">background-origin</span><span class="token punctuation">:</span> padding-box<span class="token punctuation">;</span><br><span class="token property">background-clip</span><span class="token punctuation">:</span> border-box<span class="token punctuation">;</span><br><span class="token property">background-attachment</span><span class="token punctuation">:</span> scroll<span class="token punctuation">;</span></code></pre>
+<div class="callout callout--tip"><span class="callout__icon"><svg class="icon icon--lightbulb" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-lightbulb"></use></svg></span><div class="callout__content"><p>It's better to be explicit. If you want to change the background color, use <code>background-color</code>.</p></div></div>
+<h2 id="h-always-be-flexible"><a class="heading-anchor" href="#h-always-be-flexible" aria-hidden="true">#</a> Always Be Flexible</h2>
+<p>CSS deals with a large amount of unknown variables: screen size, dynamic content, device capabilities - the list goes on. If your styles are too narrow or restrictive, chances are one of these variables will trip you up. That’s why a key aspect in writing good CSS is to embrace its flexibility.</p>
+<p>Your goal is to write a set of instructions that is comprehensive enough to describe what you want to achieve, yet flexible enough to let the browser figure out the <strong>how</strong> by itself. That’s why its usually best to avoid <em>“magic numbers”</em>.</p>
+<p>Magic numbers are random hard values. Something like:</p>
+<pre class="language-css"><code class="language-css"><span class="token selector">.thing</span> <span class="token punctuation">{</span><br>    <span class="token property">width</span><span class="token punctuation">:</span> 218px<span class="token punctuation">;</span> <span class="token comment">/* why? */</span><br><span class="token punctuation">}</span></code></pre>
+<p>Whenever you find yourself tapping the arrow key in your devtools, adjusting a pixel value to make something fit - that’s probably a magic number. These are rarely the solution to a CSS problem, because they restrict styles to a very specific usecase. If the constraints change, that number will be off.</p>
+<p>Instead, think about what you actually want to achieve in that situation. Alignment? An aspect ratio? Distributing equal amounts of space? All of these have flexible solutions.</p>
+<div class="callout callout--tip"><span class="callout__icon"><svg class="icon icon--lightbulb" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-lightbulb"></use></svg></span><div class="callout__content"><p>In most cases, it's better to define a rule for the intent, rather than hard-code the computed solution to it.</p></div></div>
+<h2 id="h-context-is-key"><a class="heading-anchor" href="#h-context-is-key" aria-hidden="true">#</a> Context is Key</h2>
+<p>For many layout concepts it’s imperative to understand the relationship between elements and their container. Most components are sets of parent and child nodes. Styles applied to the parent can affect the descendants, which might make them ignore other rules. Flexbox, Grid and <code>position:absolute</code> are common sources of such errors.</p>
+<div class="callout callout--tip"><span class="callout__icon"><svg class="icon icon--lightbulb" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-lightbulb"></use></svg></span><div class="callout__content"><p>When in doubt about a particular element behaving different than you'd want it to, look at the context it's in. Chances are something in its ancestry is affecting it.</p></div></div>
+<h2 id="h-content-will-change"><a class="heading-anchor" href="#h-content-will-change" aria-hidden="true">#</a> Content will change</h2>
+<p>The number one mistake made by designers and developers alike is assuming that things will always look like they do in the static mockup. I can assure you, they will not.</p>
+<p>Strings may be longer than intended or contain special characters, images might be missing or have weird dimensions. Displays may be very narrow or extremely wide. Those are all states you need to anticipate.</p>
+<div class="callout callout--tip"><span class="callout__icon"><svg class="icon icon--lightbulb" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-lightbulb"></use></svg></span><div class="callout__content"><p>Always be aware that what you see is just one UI state in a bigger spectrum. Instead of styling the thing on your screen, try to build a &quot;blueprint&quot; of the component. Then make sure that whatever you throw at it won't break your styling.</p></div></div>
+<h2 id="h-find-patterns-and-re-use-them"><a class="heading-anchor" href="#h-find-patterns-and-re-use-them" aria-hidden="true">#</a> Find Patterns and re-use them</h2>
+<p>When you set out to turn a design mockup into code, it’s often helpful to take inventory of the different patterns included first. Analyse each screen and take note of any concept that occurs more than one. It might be something small like a typographic style, or large like a certain layout pattern. What can be abstracted? What’s unique?</p>
+<div class="callout callout--tip"><span class="callout__icon"><svg class="icon icon--lightbulb" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-lightbulb"></use></svg></span><div class="callout__content"><p>Thinking of pieces in a design as standalone things makes them easier to reason about, and helps to draw the boundaries between components.</p></div></div>
+<h2 id="h-use-consistent-names"><a class="heading-anchor" href="#h-use-consistent-names" aria-hidden="true">#</a> Use consistent Names</h2>
+<p>A surprisingly large part of programming in general is coming up with good names for stuff. In CSS, it helps to stick to a convention. Naming schemes like <a href="http://getbem.com">BEM</a> or <a href="http://smacss.com/">SMACSS</a> can be very helpful; but even if you don’t use them, stick to a certain vocabulary. You’ll find that certain component patterns come up over and over - but is it called a “hero” or a “stage”? Is it “slider” or “carousel”?</p>
+<div class="callout callout--tip"><span class="callout__icon"><svg class="icon icon--lightbulb" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-lightbulb"></use></svg></span><div class="callout__content"><p>Establish a routine in how you name parts of your UI, then stick to that convention in all your projects. When working in a team, it can be helpful to agree on component names early on and document them somewhere for new team members.</p></div></div>
+<hr>
+<p>All these things were important for me to understand, but your personal experience as to what matters most might be different. Did you have another “aha” moment that made you understand CSS better? Let me know!</p>
+<p><strong>Update:</strong> I did <a href="https://noti.st/mxb/MxkoVi/the-css-mindset">a talk about the CSS Mindset</a> at CSS-Minsk-JS in September. There’s also a video recording available, if you prefer that.</p>
+<aside class="signup js-signup-widget" data-nosnippet><div class="signup__front"><h2 class="signup__title">By the way...</h2><div class="signup__desc">I'm running an email list for people interested in CSS and front-end development! If you enjoy that kind of stuff, you can join here and I'll notify you whenever I publish a new post. No strings attached, unsubscribe anytime.</div><div class="signup__form"><form action="https://dev.us18.list-manage.com/subscribe/post" method="POST" class="form form--signup"><div class="form__body"><input type="hidden" name="u" value="64781452976687d0f4f2ea370"> <input type="hidden" name="id" value="772b9208b5"> <input type="hidden" name="SOURCE" value="/blog/the-css-mindset/"><div class="form__fields"><p class="form__field"><label for="mce-FNAME" class="form__label">First Name (optional)</label> <input type="text" class="form__input" value="" name="FNAME" id="mce-FNAME" placeholder="Alice"></p><p class="form__field"><label for="mce-EMAIL" class="form__label">Email Address</label> <input type="email" class="form__input" value="" name="EMAIL" id="mce-EMAIL" placeholder="alice@awesome.io" required></p></div><div class="sr-only" aria-hidden="true"><input type="text" name="b_64781452976687d0f4f2ea370_772b9208b5" tabindex="-1" value=""></div></div><div class="form__actions"><button type="submit" class="btn btn--primary" name="subscribe">Subscribe</button><div class="form__feedback js-signup-widget-feedback" hidden></div><div class="spinner"><div class="spinner__layercontainer"><div class="spinner__layer spinner__layer--1"><div class="spinner__circle-clipper spinner__left"><div class="spinner__circle"></div></div><div class="spinner__gap-patch"><div class="spinner__circle"></div></div><div class="spinner__circle-clipper spinner__right"><div class="spinner__circle"></div></div></div><div class="spinner__layer spinner__layer--2"><div class="spinner__circle-clipper spinner__left"><div class="spinner__circle"></div></div><div class="spinner__gap-patch"><div class="spinner__circle"></div></div><div class="spinner__circle-clipper spinner__right"><div class="spinner__circle"></div></div></div><div class="spinner__layer spinner__layer--3"><div class="spinner__circle-clipper spinner__left"><div class="spinner__circle"></div></div><div class="spinner__gap-patch"><div class="spinner__circle"></div></div><div class="spinner__circle-clipper spinner__right"><div class="spinner__circle"></div></div></div><div class="spinner__layer spinner__layer--4"><div class="spinner__circle-clipper spinner__left"><div class="spinner__circle"></div></div><div class="spinner__gap-patch"><div class="spinner__circle"></div></div><div class="spinner__circle-clipper spinner__right"><div class="spinner__circle"></div></div></div></div></div></div></form></div></div><div class="signup__back js-signup-backside"></div><div class="signup__icon"><svg class="icon icon--check" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-check"></use></svg></div></aside>
+<h2 id="h-further-reading"><a class="heading-anchor" href="#h-further-reading" aria-hidden="true">#</a> Further Reading</h2>
+<ul>
+<li><a href="https://www.smashingmagazine.com/2019/01/how-to-learn-css/">How to learn CSS</a> by Rachel Andrews</li>
+<li><a href="https://css-tricks.com/the-secret-weapon-to-learning-css/">The Secret Weapon to learning CSS</a> by Robin Rendle</li>
+<li><a href="https://andy-bell.design/wrote/css-doesnt-suck/">CSS doesn’t suck</a> by Andy Bell</li>
+</ul>
+
+    </div>
+
+    <div class="post__footer">
+        <div hidden>
+            <a class="u-url" href="https://mxb.dev/blog/the-css-mindset/">The CSS Mindset</a>
+            <p class="h-card p-author">
+                <a class="p-name u-url" rel="author" href="https://mxb.dev">Max Böck</a>
+                <img class="u-photo" src="https://mxb.dev/assets/images/avatar2.jpg" />
+            </p>
+        </div>
+
+        
+            <p class="post__footer__info">
+                Published in [code] &sdot; 05 Jun 2019 <br/>
+                <a href="https://github.com/maxboeck/mxb/tree/master/./src/posts/the-css-mindset/2019-06-05-index.md" title="suggest a change to this post by submitting a PR">Edit this Post</a>
+            </p>
+
+            <a
+                href="https://front-end.social/@mxbck"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Follow Max Böck on Mastodon"
+                class="btn btn--mastodon"
+            >
+                <svg class="icon icon--mastodon" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-mastodon"></use></svg> Follow @mxbck
+            </a>
+        
+    </div>
+</article>
+
+
+<div class="postsection">
+    <div class="postsection__header">
+        <h3 class="postsection__title u-mb0">Webmentions</h3>
+        <a href="https://indieweb.org/Webmention" class="postsection__info" target="_blank" rel="noopener noreferrer">
+            <svg class="icon icon--question" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-question"></use></svg> What’s this?
+        </a>
+    </div><div
+    class="webmentions" 
+    id="webmentions"
+    data-url="https://mxb.dev/blog/the-css-mindset/"
+    data-last-fetched=""
+>
+    <div data-render-root>
+        
+            <p class="webmentions__empty">No webmentions yet.</p>
+        
+    </div>
+</div>
+</div>
+
+<div class="postsection">
+    <h3 class="postsection__title">Other things I've written</h3>
+    
+
+<ol class="otherposts">
+    
+        <li class="otherposts__item">
+            <a href="/blog/seven-reasons-why-i-dont-write/" class="otherposts__link ">
+                <span class="otherposts__title">7 Reasons why I don&#39;t write</span>
+                <time class="otherposts__date" datetime="2023-01-30T00:00:00" aria-label=", written 30 Jan 2023">
+                    30 Jan 2023
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/the-indieweb-for-everyone/" class="otherposts__link ">
+                <span class="otherposts__title">The IndieWeb for Everyone</span>
+                <time class="otherposts__date" datetime="2022-11-12T00:00:00" aria-label=", written 12 Nov 2022">
+                    12 Nov 2022
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/make-free-stuff/" class="otherposts__link ">
+                <span class="otherposts__title">Make Free Stuff</span>
+                <time class="otherposts__date" datetime="2022-01-25T00:00:00" aria-label=", written 25 Jan 2022">
+                    25 Jan 2022
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/media-queries-in-times-of-container-queries/" class="otherposts__link ">
+                <span class="otherposts__title">Media Queries in Times of @container</span>
+                <time class="otherposts__date" datetime="2021-06-11T00:00:00" aria-label=", written 11 Jun 2021">
+                    11 Jun 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/container-queries-web-components/" class="otherposts__link ">
+                <span class="otherposts__title">Container Queries in Web Components</span>
+                <time class="otherposts__date" datetime="2021-05-15T00:00:00" aria-label=", written 15 May 2021">
+                    15 May 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/eleventy-asset-pipeline/" class="otherposts__link ">
+                <span class="otherposts__title">Asset Pipelines in Eleventy</span>
+                <time class="otherposts__date" datetime="2021-04-26T00:00:00" aria-label=", written 26 Apr 2021">
+                    26 Apr 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/medium-share-highlight-eleventy/" class="otherposts__link ">
+                <span class="otherposts__title">Medium-Style Share Highlights in Eleventy</span>
+                <time class="otherposts__date" datetime="2021-04-13T00:00:00" aria-label=", written 13 Apr 2021">
+                    13 Apr 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/space-jam/" class="otherposts__link ">
+                <span class="otherposts__title">Space Jam</span>
+                <time class="otherposts__date" datetime="2021-04-04T00:00:00" aria-label=", written 04 Apr 2021">
+                    04 Apr 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/webmention-analytics/" class="otherposts__link ">
+                <span class="otherposts__title">Webmention Analytics</span>
+                <time class="otherposts__date" datetime="2021-02-07T00:00:00" aria-label=", written 07 Feb 2021">
+                    07 Feb 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/persistent-build-folders-netlify/" class="otherposts__link ">
+                <span class="otherposts__title">Making Persistent Build Folders in Netlify</span>
+                <time class="otherposts__date" datetime="2021-01-05T00:00:00" aria-label=", written 05 Jan 2021">
+                    05 Jan 2021
+                </time>
+            </a>
+        </li>
+    
+</ol>
+</div>
+
+            </main>
+
+            <footer class="footer h-card" role="contentinfo">
+    <div class="footer__inner container">
+        <p class="footer__item">
+            <strong>&copy; 2012&ndash;2023</strong><br />
+            <a class="p-name u-url" rel="me" href="https://mxb.dev">Max Böck</a>
+        </p>
+
+        <p class="footer__item">
+            <strong>Subscribe</strong><br />
+            <a href="/mailinglist">Mailing List</a>
+        </p>
+
+        <p class="footer__item">
+            <strong>Social</strong><br />
+            <a href="https://front-end.social/@mxbck" title="Mastodon" rel="me" >Mastodon</a> / 
+            <a href="https://github.com/maxboeck" title="Github" rel="me">Github</a>
+        </p>
+
+        <p class="footer__item">
+            <strong>Legal</strong><br />
+            <a href="/privacy/">Privacy Policy</a>
+        </p>
+
+        <p class="footer__item">
+            <strong>Links</strong><br />
+            <a href="/blogroll/">Blogroll</a>
+        </p>
+
+        <p class="footer__item footer__item--right u-desktop-only">
+            <a href="https://speedlify.mxb.dev/mxb.dev/" class="footer__speedlify">
+                <speedlify-score speedlify-url="https://speedlify.mxb.dev" hash="7dda0135" score weight></speedlify-score>
+            </a>
+        </p>
+
+        <p class="footer__item footer__item--right">
+            <a href="https://github.com/maxboeck/mxb/tree/master/./src/posts/the-css-mindset/2019-06-05-index.md" class="footer__icon" title="Edit this page on Github">
+                <span class="sr-only">Edit this page on Github</span>
+                <svg class="icon icon--github" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-github"></use></svg>
+            </a>
+            <a href="/feed.xml" class="footer__icon" title="RSS Feed">
+                <span class="sr-only">RSS Feed</span>
+                <svg class="icon icon--feed" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-feed"></use></svg>
+            </a>
+        </p>
+
+    </div>
+</footer>
+        </div>
+
+        
+        <script src="/assets/scripts/main.js" defer></script><script src="/assets/scripts/webmentions.js" defer></script>
+            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></body>
+</html>

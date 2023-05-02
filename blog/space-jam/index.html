@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<!--!
+  Oh so you're an inspector?
+  View the source here: https://github.com/maxboeck/mxb
+-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Space Jam | Max Böck</title>
+        <link rel="preload" href="/assets/fonts/noe-display-medium.woff2" as="font" type="font/woff2" crossorigin>
+        <link rel="preconnect" href="https://webmention.io">
+
+        <link rel="stylesheet" href="/assets/styles/themes.css">
+        <link rel="stylesheet" href="/assets/styles/main.css">
+
+        
+
+<meta name="description" content="I&#39;m running a speed test on the new Space Jam site: the 1996 version on dial-up VS. the 2021 version on a 3G connection. Who will win?"><meta name="image" content="https://mxb.dev/blog/space-jam/cover.jpg"><meta property="og:title" content="Space Jam">
+<meta property="og:description" content="I&#39;m running a speed test on the new Space Jam site: the 1996 version on dial-up VS. the 2021 version on a 3G connection. Who will win?">
+<meta property="og:url" content="https://mxb.dev/blog/space-jam/">
+<meta property="og:image" content="https://mxb.dev/blog/space-jam/cover.jpg">
+<meta name="twitter:card" content="summary_large_image">
+
+<meta property="og:type" content="article">
+    <meta property="article:published_time" content="2021-04-04T00:00:00">
+<meta name="author" content="Max Böck">
+<meta property="og:site_name" content="Max Böck">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:site" content="@mxbck">
+<meta name="twitter:creator" content="@mxbck">
+<meta property="fb:app_id" content="127677017332959">
+
+<link rel="canonical" href="https://mxb.dev/blog/space-jam/">
+
+
+<script type="application/ld+json">
+    {
+        "name":"Max Böck",
+        "description":"Max Böck is a professional front-end developer based in Vienna, Austria.",
+        "author": {
+            "@type":"Person",
+            "name":"Max Böck"
+        },
+        "@type":"WebSite",
+        "url":"https://mxb.dev",
+        "image":"https://mxb.dev/assets/images/avatar2.jpg",
+        "headline":"Max Böck",
+        "sameAs":[
+            "https://twitter.com/mxbck",
+            "https://github.com/maxboeck"
+        ],
+        "@context":"http://schema.org"
+    }
+</script>
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/images/favicon/apple-touch-icon.png?v=1">
+<link rel="icon" type="image/png" href="/assets/images/favicon/favicon-32x32.png?v=1" sizes="32x32">
+<link rel="icon" type="image/png" href="/assets/images/favicon/favicon-16x16.png?v=1" sizes="16x16">
+<link rel="mask-icon" href="/assets/images/favicon/safari-pinned-tab.svg?v=1" color="#1a1a1a">
+<link rel="shortcut icon" href="/assets/images/favicon/favicon.ico?v=1">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#1a1a1a">
+
+
+<link type="application/atom+xml" rel="alternate" href="https://mxb.dev/feed.xml" title="Max Böck">
+<link type="application/atom+xml" rel="alternate" href="https://mxb.dev/notes/feed.xml" title="Max Böck | Notes">
+
+
+<link rel="authorization_endpoint" href="https://indieauth.com/auth" />
+<link rel="token_endpoint" href="https://tokens.indieauth.com/token" />
+<meta name="monetization" content="$ilp.uphold.com/7qZLaNKjDa87">
+
+
+<link rel="pingback" href="https://webmention.io/mxb.dev/xmlrpc">
+<link rel="webmention" href="https://webmention.io/mxb.dev/webmention">
+        <script>(function() {
+    var theme = localStorage.getItem('theme');
+    window.metaColors = {'default':'#f7f7f9','dark':'#252526','beach':'#e3f6f5','choco':'#41312E','moomoo':'#f3e1d8','bowser':'#29293e','yoshi':'#f2ede9','rainbow':'#311b46','lobster':'#ffb9ad','hackernews':'#F8F8EC'};
+    if (theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', window.metaColors[theme]);
+    }
+})();</script>
+    </head>
+    <body>
+        <a href="#main" class="sr-skip-link">skip to main content</a>
+        <div class="titlebar">
+    <div class="titlebar__inner"></div>
+</div>
+
+        <div class="hfeed layout" role="document">
+            <div class="themepicker js-themepicker" data-nosnippet hidden>
+    <h3 class="themepicker__title">Select Theme</h3>
+    <ul class="themepicker__list" id="theme-menu">
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Classic'" 
+                data-theme="default" 
+            >
+                <span class="themepicker__name">Classic</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Dark'" 
+                data-theme="dark" 
+            >
+                <span class="themepicker__name">Dark</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Koopa Beach'" 
+                data-theme="beach" 
+            >
+                <span class="themepicker__name">Koopa Beach</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Choco Mountain'" 
+                data-theme="choco" 
+            >
+                <span class="themepicker__name">Choco Mountain</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Moo Moo Farm'" 
+                data-theme="moomoo" 
+            >
+                <span class="themepicker__name">Moo Moo Farm</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Bowser&#39;s Castle'" 
+                data-theme="bowser" 
+            >
+                <span class="themepicker__name">Bowser&#39;s Castle</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Yoshi Valley'" 
+                data-theme="yoshi" 
+            >
+                <span class="themepicker__name">Yoshi Valley</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Rainbow Road'" 
+                data-theme="rainbow" 
+            >
+                <span class="themepicker__name">Rainbow Road</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Lobster Life'" 
+                data-theme="lobster" 
+            >
+                <span class="themepicker__name">Lobster Life</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Hacker News'" 
+                data-theme="hackernews" 
+            >
+                <span class="themepicker__name">Hacker News</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+    </ul>
+    <button class="iconbtn themepicker__close js-themepicker-close">
+        <span class="sr-only">close themepicker</span>
+        <svg class="icon icon--close" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-close"></use></svg>
+    </button>
+</div>
+            <header class="header" role="banner">
+    <div class="header__inner container">
+
+        <a class="header__brand" href="/" rel="home">
+            <img class="header__avatar" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAgICAgJCAkKCgkNDgwODRMREBARExwUFhQWFBwrGx8bGx8bKyYuJSMlLiZENS8vNUROQj5CTl9VVV93cXecnNEBCAgICAkICQoKCQ0ODA4NExEQEBETHBQWFBYUHCsbHxsbHxsrJi4lIyUuJkQ1Ly81RE5CPkJOX1VVX3dxd5yc0f/CABEIAJYAlgMBIgACEQEDEQH/xAAcAAABBQEBAQAAAAAAAAAAAAAAAQQFBgcDAgj/2gAIAQEAAAAA2dVAUABRQOaqB4j+T5x7AVQ5qp5zDGotHehbbIigp4VTDcjlLvZpZr60VyooeVVh8g8NX0911bRziyPBQRSv/J3G6a3cfbWMrN8mfQogtc+UGFj3+w9o+KoGiW5yKvlSG+T4XU9d85hZOVfuWgyIq+VWjVZl3tvqIlyr+tIlVURSHZsa/Iyy8HdQ56NJCiKcYauwzuwc/ELWJfSpUURRWlBZQ944FTbvtGmfSiKKRcJUGdxeZ2ysGjSqqAopCViq0rvDzl30x+egUUWKqfqH41xjWdU0SXVVFUoFPuzjkR2X1XxJz9+0R8q1LJ6BI6pcetDoECHVx1k/prO8orfB756dmicenXx57r60/MWnLzKM+p4F8dU5dPXP/8QAGQEBAAMBAQAAAAAAAAAAAAAAAAEDBAUC/9oACAECEAAAAPYAPGeu3UCjE8dOwKMUeNusRzc5q6KYV8iPWnozEw5mX3t3IHMzOnpTEKqL7kR6RIiX/8QAGQEBAAMBAQAAAAAAAAAAAAAAAAECBQME/9oACAEDEAAAAKAAv6evDyg7adpx+Yd9O1svyidn0Izs9MT02rXyvATMavsrmeIlGr7Iy/IrZbt348BEgH//xAA+EAACAQMDAQUFBQUGBwAAAAABAgMABBEFEiExBhMiQVEUMDJhcQdigZGhIDNSkrEQFSNCcsFAQ1Njg9Hh/9oACAEBAAE/AP8AiXkRBl2AHzNS61o8AzLqNsn+qRRSdodDk+HVLU/+Raiv7GYkRXcLn0VwaEiHow967pGpd2AUdSa7S/aHBZia201e8nGQZT8CGr/WNS1KUvd300xPBDt4f5RgUVaPJWMbfVByPyoPcA8ZIqO6vYXDqGVuhK+E4P0rQ+3lzbvFFfK7pwO83nI+orT9Rtb2JXglDj3nb/tqXnfS7CUiOM4mderP/CKaR5DwMVY6NPdlF8fiPHFWPYptoZpTVl2VtYf3oD0dAsCuO4XAGKm7NaU6FHgFaRHJolxHb5L2sjYjb+Buu01HMGANA/tY/t1PPsVxhiv+G2WHlVzHskO7JOcs3qaSdt+EH6V2VaENGZBz55pQMDGMUkJIzihEMdKliqVcHmrLUCWMbHlTioJdw9z2muGh0e/KnBED/wBKu3kZjk5FRTtAMgeImtDuZMb2fwIdzHyH/s1ol288I3VbnwgGpcY4pquU4NPMbfWIVJws8J/mjOP6GrOTgGgcj3HaOFpdOvEQBnMD7QelXW1MsqZOPiNQOA+4jc2c5IrTjdX08FrCpwX8vWtJsFs7WOPOWxyagqaWCMEvIo+po3dvJ8Einy4Oa1bUIbO2knkbAUVFrE+qypI9i8QhYssh8wwxitGvO9iAJ5FQPlf2Mfsa1PbQWjm5cLEwKsScVqq2ouJRASUDnbj08qCbRznFfZ7aDfNcuBuxhaTirm57qMgzFM9MV2iuFjkhjlM83fHMaB2w2PmtaJYMiRYiaJD5Gu1sEss1haiYQwyFi8hGfhrS7W8gimMsqGMkDao+8cHNaHJtlIq1b3Graams6w63YV7a1jVY0Ybhvfkvg8ZxUvY3T59TnDReD/J4sAYH3aTsfokjzBVR5Y1K5UEIG/3IrQdP/u2WWDPwkig3ix5U9lDJ43TcfLNX+ny3kiZwAmdvAJGfSra0NvHEpYnA861XTUvLUhhkqdynzU+RqSBEtHwoBAH6GtLD+0KVqz5x7ieLurqWTH7xFz9R4auY9s25VOFwPyFQQxwwjahLRZC453gnz9DWrFLW+huAvD5Vh9Kt3V1R1OVIBFR9KcKOa9oDgD72BSeJcMcZrUykZmVCOeo+ea0fHfgGrID3E8QljZTwfI1P3xkRSo5fOfIgj/5Wr63b6ON86S7GbapQZNXs/t9kLxPhLhk+jCtKYNBx0zStUuSjc0ohEQj2hqu0aIkRRnefPLE0jOLi8idiSojzznBOTitMJFylWbcj3MsAZ0bzBNdr9M9vMIzjux+rHFadai309rTO5Ysp+BqDVRaXRiY4zJyDUciOAynII4NXkck0LRROULcFh1FC1aCMbLiUKo6ZBP5kVf30XeMpnuWz5M5A/MUUhQJ3aBSy5fAxyOBWnOBcLVpyFxS9PcYq/slmXIXnOaubMQIDjhuCc5q/0uCdpWmTGTlT6GtL1I2Efs10cqrYVqhuIHKgODkZp4O8UgNgGu0lvBDKjBgQoxketQ3cM3dBOoi8X1zWjxCSbJ8qsU8ND3JFatCq228DGHFP4121qehTTK/cOM+QanOs6VLl4pAVGNw5FL2z1FFEZDHFXOoajqUpAjcZPI6DJ8606IWMDvPKO8Px84C/KuzVzFMzFHVh6g5qzxj3esMosyuRlmGB9KUUYz5VeQmaVYgMg9al7NabLEWeAA46in7OujkQtgVqGnT2tncTysMbNoUjO4ngCtJvLrSpO9t5grY2nIyDWi/aNZDEeo20kb+ckXjSrLXtGvxm11GB/u78N+RocjI9x2p7dW+j3A0+zjW4vv8APk4jgH360ztLd3+rZv5Q/exGNMDaqlTkACguMVtGKEK7unJq8wkQQdTSoFYknAAOSeBXabWl1CZbe3YezwMSH/jfpn6CmJKbvQVbt4hx1pZlAzJGpGeM85rT+0F9ZsO4uni+4G4H4Vp3b8h0ivoRID/zIuD+VWOoWWoQ99aTrKnnjqD6EeX9vABJOAK1Ltv2esGkj9pM8qdVgG8A+hfoDXaP7RNTv0eO1zaWvTbG+JZSfIvUSyCN5XOXkbn555JqKZ42EiPhhyPusOa0TtJa30aRTSJHcgY2k4Df6ajUkDjrUsltaxmSeVIwBklyF/rWrds9Hicm2c3bjp3XwfzmtS1/UNUykjd3AesSZwR94+dSt4Tjn6+ZoL/gSt8sYq1O7afQZNSSYKEZ3McIP4QKUAZRTjHMjH+ld8uGVFIGfi86tdWkszmCaWElcErkZ/lpmVFLMwVQMkk4ArWvtEsrYvDpUPtko6yk7YF/HzrVdf1PVmJ1G/eVP+hGTHAPwHWriZm2RLgKo4VeAB8hTRB5kjzxGMn5s1Og8G7og4qFgoB6g9aIBkPPzwaF1qQUKt7dKPQTyD/epEeUh5naQg8NIxdgfq2ayAOTuOegrxEn9cUemMn55ojFu/NWir3Qx1am3e0Tv17lQv4mg+yJU6sfETS8c5JP61vAbkcAYrtx2imu5bjTowUt4Hw485HWpHYg7jkdaY+HI68moV3y5OOvSrVi0s7/APcY/lxS7TvGOcYzUDYOwrnBOKnQlRIG5FLIZFHJraflyaHClh1Jx0pUABI8hzXQ5q6OLMkZG45q16Q4J/dg/nUHMIJ5Mp71j8m6ClwfF0Hp8hTEggZ6YoHw7sdSa//EACQRAAEEAgEEAgMAAAAAAAAAAAEAAgMRICEEEjFCUTBBYXGB/9oACAECAQE/APkc5Ola0ozj0opw4gZlPFOKLRVoWDYUT+tuRIUjrcg76DbQdZUDqNZStc2Q7PtOOztA6Q2dKDuP3lJG17dp7el9I0Eemh2UPiRnyxUiAJXQT41+Vxx2z5ZJl/gVEoj6C40ZjZvuVatVhLC2Qb0faHErzUcEbDYFn2cK+P8A/8QAJhEAAQQABgEEAwAAAAAAAAAAAQACAxEEEiAhMVEiEDBBcWGBof/aAAgBAwEBPwD3GttMge4bCghhD2pcOWAnW1ROtoWY3SIDgQVIzI8jULtQtpgJRbvZcAntyhYgb6QoXtfC00OAOPlMAy8L54vpGwN1iuT9aopXxu8TzyFG/Oy+0Cmgm7KxB8na8Ebi/aNIPDb8r/ACxJ8nbEa8IKi+yUHAIO2WKlEsm3AFBZVl9a9IpnRHbcdI4u+Gf1SYiSQUTQ6Gkce1/9k=" width="48" height="48" alt="" />
+            <span class="header__name">
+                <span>Max Böck</span>
+                <span class="header__verification" aria-hidden="true">
+                    <svg class="icon icon--verified" version="1.1" viewBox="0,0,24,24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.71-3.998-3.818-3.998-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.437 2.25c-.415-.165-.866-.25-1.336-.25-2.11 0-3.818 1.79-3.818 4 0 .494.083.964.237 1.4-1.272.65-2.147 2.018-2.147 3.6 0 1.495.782 2.798 1.942 3.486-.02.17-.032.34-.032.514 0 2.21 1.708 4 3.818 4 .47 0 .92-.086 1.335-.25.62 1.334 1.926 2.25 3.437 2.25 1.512 0 2.818-.916 3.437-2.25.415.163.865.248 1.336.248 2.11 0 3.818-1.79 3.818-4 0-.174-.012-.344-.033-.513 1.158-.687 1.943-1.99 1.943-3.484zm-6.616-3.334l-4.334 6.5c-.145.217-.382.334-.625.334-.143 0-.288-.04-.416-.126l-.115-.094-2.415-2.415c-.293-.293-.293-.768 0-1.06s.768-.294 1.06 0l1.77 1.767 3.825-5.74c.23-.345.696-.436 1.04-.207.346.23.44.696.21 1.04z"/>
+                    </svg>
+                </span>
+            </span>
+        </a>
+
+        <div class="header__nav">
+            <nav class="nav js-nav" role="navigation" tabindex="-1">
+
+    
+    <button
+        class="iconbtn nav__togglebtn js-nav-toggle"
+        aria-expanded="false"
+        aria-controls="nav-menu"
+        aria-label="toggle menu"
+    >
+        <span class="menuicon">
+            <span class="menuicon__bar"></span>
+            <span class="menuicon__bar"></span>
+            <span class="menuicon__bar"></span>
+            <span class="menuicon__bar"></span>
+        </span>
+    </button>
+
+    
+    <div class="nav__content">
+        <ul class="nav__menu js-nav-menu" id="nav-menu"><li class="nav__item">
+                    <a
+                        href="/"
+                        class="nav__link"
+                        
+                    >
+                        <span class="nav__num" aria-hidden="true">01</span>
+                        Home
+                    </a>
+                </li><li class="nav__item nav__item--active">
+                    <a
+                        href="/blog/"
+                        class="nav__link"
+                        
+                    >
+                        <span class="nav__num" aria-hidden="true">02</span>
+                        Writing
+                    </a>
+                </li><li class="nav__item">
+                    <a
+                        href="/notes/"
+                        class="nav__link"
+                        
+                    >
+                        <span class="nav__num" aria-hidden="true">03</span>
+                        Notes
+                    </a>
+                </li><li class="nav__item">
+                    <a
+                        href="/about/"
+                        class="nav__link"
+                        
+                    >
+                        <span class="nav__num" aria-hidden="true">04</span>
+                        About
+                    </a>
+                </li></ul>
+    </div>
+    
+    
+    <div class="nav__bg">
+        <div class="nav__bg__circle"></div>
+    </div>
+
+</nav>
+
+            <button
+                class="iconbtn header__themebtn js-themepicker-toggle"
+                aria-expanded="false"
+                aria-controls="theme-menu"
+            >
+                <span class="sr-only">toggle theme panel</span>
+                <svg class="icon icon--theme" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true">
+                    <path d="M18 4V3c0-.55-.45-1-1-1H5c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h12c.55 0 1-.45 1-1V6h1v4H9v11c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-9h8V4h-3z"/>
+                </svg>
+            </button>
+        </div>
+
+    </div>
+</header>
+
+            <main class="main container" role="main" id="main" tabindex="-1">
+                <article 
+    id="space-jam" 
+    class="post h-entry" 
+    role="article" 
+    itemscope 
+    itemtype="http://schema.org/BlogPosting" 
+    aria-labelledby="space-jam-title" 
+>
+    <header class="post__header">
+        <h1 id="space-jam-title" class="post__title p-name title" itemprop="headline">Space Jam</h1>
+        <div class="post__meta">
+
+            <p >
+                <time class="post__date dt-published" itemprop="datePublished" datetime="2021-04-04T00:00:00">04 Apr 2021</time>
+                
+                <span aria-label="in category">&sdot;</span> <span class="post__tags p-category">code</span>
+                
+                
+            </p>
+
+            
+
+        </div>
+    </header>
+
+    <div class="post__content e-content markdown" itemprop="articleBody">
+        <p class="lead">The iconic 1996 "Space Jam" <a href="https://www.spacejam.com">website</a> was recently relaunched to promote the new movie. Thankfully, the developers still <a href="https://www.spacejam.com/1996/">kept the old site</a> around to preserve its intergalactic legacy.</p>
+<p>It’s not often that a website stays up mostly unchanged for 25 years. So out of curiosity, I ran a quick check on both sites.</p>
+<p>Unsurprisingly, the new site is a lot heavier than the original: with <strong>4.673KB vs. 120KB</strong>, the new site is about <strong>39 times the size</strong> of the old one. That’s because the new site has a trailer video, high-res images and a lot more Javascript:</p>
+<figure class="extend">
+    <img src="sizes.png" alt="byte size comparison of the 1996 and 2021 space jam websites" />
+    <figcaption>The new site has gained some weight</figcaption>
+</figure>
+<p>This is keeping with the general trend of websites growing heavier every year, with the <a href="https://httparchive.org/reports/page-weight">average site</a> weighing in at around 1.900KB now.</p>
+<p>But since our connection speeds and device capabilities are significantly better now - that’s fine. Everything is way faster now than it was back in the days of Michael Jordan’s first Looney Tunes adventure.</p>
+<p>Is it though? Let’s find out.</p>
+<h2 id="h-party-like-it%E2%80%99s-1996"><a class="heading-anchor" href="#h-party-like-it%E2%80%99s-1996" aria-hidden="true">#</a> Party like it’s 1996</h2>
+<p>1996 was a different time. The Spice Girl’s “Wannabe” was in anti-shock discmans everywhere, and the most common network connection was 56k dial-up modems. So of course the original developers had a smaller performance budget to work with, and the site is much lighter. Fair enough - so how long did it take to load the original Space Jam site back then?</p>
+<p>I ran a <a href="https://webpagetest.org/result/210404_BiDcBV_b347ef65fef0d8e8615d0196f93d631a/">webpagetest</a> with a simulated '96 connection: dial-up on an average desktop computer. Dial-up had a maximum speed of 56 kbit/s, but in reality it came in at something around <strong>40-50 kbit/s</strong>.</p>
+<p>Here’s how that looked (fire up the <a href="https://www.youtube.com/watch?v=iHW1ho8L7V8">dial-up noise</a> in another tab for the full experience):</p>
+<video width="408" height="384" controls muted>
+    <source src="1996.mp4" type="video/mp4">
+</video>
+<p class="u-align-center">
+    <a href="https://webpagetest.org/result/210404_BiDcBV_b347ef65fef0d8e8615d0196f93d631a/">Test Summary</a> | 
+    <a href="https://webpagetest.org/video/compare.php?tests=210404_BiDcBV_b347ef65fef0d8e8615d0196f93d631a-r%3A1-c%3A0&highlightLCP=1&thumbSize=200&ival=500&end=visual">Film Strip View</a>
+</p>
+<p>We can see the first content (the “press box shuttle” menu item) after <strong>4 seconds</strong>. The other menu items -all separate GIF images- come in slowly after that. Since the HTML renders as soon as it is parsed, you could theoretically already click on the items before the rest of the page has finished though. The whole site is done after <strong>28.1 seconds</strong> in this test.</p>
+<h2 id="h-back-to-the-future-2021"><a class="heading-anchor" href="#h-back-to-the-future-2021" aria-hidden="true">#</a> Back to the Future: 2021</h2>
+<p>Now let’s look at the current, futuristic state of the web. Luckily we don’t use dial-up anymore. The most common connection these days is a mobile 3G network, and the most common device is an Android phone (a Moto G4 in this test). A typical 3G connection comes in at around <strong>1.5 Mbp/s</strong>, so it is roughly <strong>30 times faster</strong> than dial-up. This shouldn’t take long:</p>
+<video width="408" height="592" controls muted>
+    <source src="2021.mp4" type="video/mp4">
+</video>
+<p class="u-align-center">
+    <a href="https://webpagetest.org/result/210404_BiDc1N_ab2991b56a23742f37e661115c39b551/">Test Summary</a> | 
+    <a href="https://webpagetest.org/video/compare.php?tests=210404_BiDc1N_ab2991b56a23742f37e661115c39b551-r:1-c:0">Film Strip View</a>
+</p>
+<p>Funnily enough, the first meaningful paint also shows up after about <strong>4 seconds</strong>. It’s not <em>actual</em> content though, it’s the loading screen, informing us that we’ve now loaded 0% of the site.</p>
+<p>We reach 100% at 12 seconds, but the first real piece of content is not rendered until <strong>21.5 seconds</strong>: it’s a youtube video in a modal window. The site is finally ready after <strong>26.8 seconds</strong>, although actually playing the video would take some more loading time.</p>
+<h2 id="h-results"><a class="heading-anchor" href="#h-results" aria-hidden="true">#</a> Results</h2>
+<p>Right. So after 25 years of technological progress, after bringing 4.7 billion people in the world online, after we just landed a fifth robot on Mars, visiting the Space Jam website is now <strong>1.3 seconds faster</strong>. That seems… underwhelming.</p>
+<p>__</p>
+<p>I know that this is just a movie promo site. And of course the requirements for a website are different now - people expect rich content. But I think this speaks to a larger point:</p>
+<p><share-highlight aria-label="Share this"><mark>Although connection speeds and devices keep getting better and better, the web is actually getting slower. We see the increasing bandwidth as an invitation to use more and more stuff in our websites. More images, more videos, more JavaScript.</mark></share-highlight></p>
+<p>We just keep filling the available <em>space, jamming</em> up the pipes in the process so nothing actually gets faster. Well, at least the dial-up sound is gone now.</p>
+
+    </div>
+
+    <div class="post__footer">
+        <div hidden>
+            <a class="u-url" href="https://mxb.dev/blog/space-jam/">Space Jam</a>
+            <p class="h-card p-author">
+                <a class="p-name u-url" rel="author" href="https://mxb.dev">Max Böck</a>
+                <img class="u-photo" src="https://mxb.dev/assets/images/avatar2.jpg" />
+            </p>
+        </div>
+
+        
+            <p class="post__footer__info">
+                Published in [code] &sdot; 04 Apr 2021 <br/>
+                <a href="https://github.com/maxboeck/mxb/tree/master/./src/posts/space-jam/2021-04-04-index.md" title="suggest a change to this post by submitting a PR">Edit this Post</a>
+            </p>
+
+            <a
+                href="https://front-end.social/@mxbck"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Follow Max Böck on Mastodon"
+                class="btn btn--mastodon"
+            >
+                <svg class="icon icon--mastodon" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-mastodon"></use></svg> Follow @mxbck
+            </a>
+        
+    </div>
+</article>
+
+
+<div class="postsection">
+    <div class="postsection__header">
+        <h3 class="postsection__title u-mb0">Webmentions</h3>
+        <a href="https://indieweb.org/Webmention" class="postsection__info" target="_blank" rel="noopener noreferrer">
+            <svg class="icon icon--question" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-question"></use></svg> What’s this?
+        </a>
+    </div><div
+    class="webmentions" 
+    id="webmentions"
+    data-url="https://mxb.dev/blog/space-jam/"
+    data-last-fetched=""
+>
+    <div data-render-root>
+        
+            <p class="webmentions__empty">No webmentions yet.</p>
+        
+    </div>
+</div>
+</div>
+
+<div class="postsection">
+    <h3 class="postsection__title">Other things I've written</h3>
+    
+
+<ol class="otherposts">
+    
+        <li class="otherposts__item">
+            <a href="/blog/seven-reasons-why-i-dont-write/" class="otherposts__link ">
+                <span class="otherposts__title">7 Reasons why I don&#39;t write</span>
+                <time class="otherposts__date" datetime="2023-01-30T00:00:00" aria-label=", written 30 Jan 2023">
+                    30 Jan 2023
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/the-indieweb-for-everyone/" class="otherposts__link ">
+                <span class="otherposts__title">The IndieWeb for Everyone</span>
+                <time class="otherposts__date" datetime="2022-11-12T00:00:00" aria-label=", written 12 Nov 2022">
+                    12 Nov 2022
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/make-free-stuff/" class="otherposts__link ">
+                <span class="otherposts__title">Make Free Stuff</span>
+                <time class="otherposts__date" datetime="2022-01-25T00:00:00" aria-label=", written 25 Jan 2022">
+                    25 Jan 2022
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/media-queries-in-times-of-container-queries/" class="otherposts__link ">
+                <span class="otherposts__title">Media Queries in Times of @container</span>
+                <time class="otherposts__date" datetime="2021-06-11T00:00:00" aria-label=", written 11 Jun 2021">
+                    11 Jun 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/container-queries-web-components/" class="otherposts__link ">
+                <span class="otherposts__title">Container Queries in Web Components</span>
+                <time class="otherposts__date" datetime="2021-05-15T00:00:00" aria-label=", written 15 May 2021">
+                    15 May 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/eleventy-asset-pipeline/" class="otherposts__link ">
+                <span class="otherposts__title">Asset Pipelines in Eleventy</span>
+                <time class="otherposts__date" datetime="2021-04-26T00:00:00" aria-label=", written 26 Apr 2021">
+                    26 Apr 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/medium-share-highlight-eleventy/" class="otherposts__link ">
+                <span class="otherposts__title">Medium-Style Share Highlights in Eleventy</span>
+                <time class="otherposts__date" datetime="2021-04-13T00:00:00" aria-label=", written 13 Apr 2021">
+                    13 Apr 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/webmention-analytics/" class="otherposts__link ">
+                <span class="otherposts__title">Webmention Analytics</span>
+                <time class="otherposts__date" datetime="2021-02-07T00:00:00" aria-label=", written 07 Feb 2021">
+                    07 Feb 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/persistent-build-folders-netlify/" class="otherposts__link ">
+                <span class="otherposts__title">Making Persistent Build Folders in Netlify</span>
+                <time class="otherposts__date" datetime="2021-01-05T00:00:00" aria-label=", written 05 Jan 2021">
+                    05 Jan 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/year-in-review-2020/" class="otherposts__link ">
+                <span class="otherposts__title">A year in review: 2020</span>
+                <time class="otherposts__date" datetime="2020-12-19T00:00:00" aria-label=", written 19 Dec 2020">
+                    19 Dec 2020
+                </time>
+            </a>
+        </li>
+    
+</ol>
+</div>
+
+            </main>
+
+            <footer class="footer h-card" role="contentinfo">
+    <div class="footer__inner container">
+        <p class="footer__item">
+            <strong>&copy; 2012&ndash;2023</strong><br />
+            <a class="p-name u-url" rel="me" href="https://mxb.dev">Max Böck</a>
+        </p>
+
+        <p class="footer__item">
+            <strong>Subscribe</strong><br />
+            <a href="/mailinglist">Mailing List</a>
+        </p>
+
+        <p class="footer__item">
+            <strong>Social</strong><br />
+            <a href="https://front-end.social/@mxbck" title="Mastodon" rel="me" >Mastodon</a> / 
+            <a href="https://github.com/maxboeck" title="Github" rel="me">Github</a>
+        </p>
+
+        <p class="footer__item">
+            <strong>Legal</strong><br />
+            <a href="/privacy/">Privacy Policy</a>
+        </p>
+
+        <p class="footer__item">
+            <strong>Links</strong><br />
+            <a href="/blogroll/">Blogroll</a>
+        </p>
+
+        <p class="footer__item footer__item--right u-desktop-only">
+            <a href="https://speedlify.mxb.dev/mxb.dev/" class="footer__speedlify">
+                <speedlify-score speedlify-url="https://speedlify.mxb.dev" hash="7dda0135" score weight></speedlify-score>
+            </a>
+        </p>
+
+        <p class="footer__item footer__item--right">
+            <a href="https://github.com/maxboeck/mxb/tree/master/./src/posts/space-jam/2021-04-04-index.md" class="footer__icon" title="Edit this page on Github">
+                <span class="sr-only">Edit this page on Github</span>
+                <svg class="icon icon--github" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-github"></use></svg>
+            </a>
+            <a href="/feed.xml" class="footer__icon" title="RSS Feed">
+                <span class="sr-only">RSS Feed</span>
+                <svg class="icon icon--feed" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-feed"></use></svg>
+            </a>
+        </p>
+
+    </div>
+</footer>
+        </div>
+
+        
+        <script src="/assets/scripts/main.js" defer></script><script src="/assets/scripts/webmentions.js" defer></script>
+            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></body>
+</html>

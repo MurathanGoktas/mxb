@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<!--!
+  Oh so you're an inspector?
+  View the source here: https://github.com/maxboeck/mxb
+-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Syndicating Content to Twitter | Max Böck</title>
+        <link rel="preload" href="/assets/fonts/noe-display-medium.woff2" as="font" type="font/woff2" crossorigin>
+        <link rel="preconnect" href="https://webmention.io">
+
+        <link rel="stylesheet" href="/assets/styles/themes.css">
+        <link rel="stylesheet" href="/assets/styles/main.css">
+
+        
+
+<meta name="description" content="How to automatically publish content from a static site on Twitter, using Eleventy and Netlify&#39;s lambda functions."><meta name="image" content="https://mxb.dev/blog/syndicating-content-to-twitter-with-netlify-functions/cover.jpg"><meta property="og:title" content="Syndicating Content to Twitter">
+<meta property="og:description" content="How to automatically publish content from a static site on Twitter, using Eleventy and Netlify&#39;s lambda functions.">
+<meta property="og:url" content="https://mxb.dev/blog/syndicating-content-to-twitter-with-netlify-functions/">
+<meta property="og:image" content="https://mxb.dev/blog/syndicating-content-to-twitter-with-netlify-functions/cover.jpg">
+<meta name="twitter:card" content="summary_large_image">
+
+<meta property="og:type" content="article">
+    <meta property="article:published_time" content="2019-01-06T00:00:00">
+<meta name="author" content="Max Böck">
+<meta property="og:site_name" content="Max Böck">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:site" content="@mxbck">
+<meta name="twitter:creator" content="@mxbck">
+<meta property="fb:app_id" content="127677017332959">
+
+<link rel="canonical" href="https://mxb.dev/blog/syndicating-content-to-twitter-with-netlify-functions/">
+
+
+<script type="application/ld+json">
+    {
+        "name":"Max Böck",
+        "description":"Max Böck is a professional front-end developer based in Vienna, Austria.",
+        "author": {
+            "@type":"Person",
+            "name":"Max Böck"
+        },
+        "@type":"WebSite",
+        "url":"https://mxb.dev",
+        "image":"https://mxb.dev/assets/images/avatar2.jpg",
+        "headline":"Max Böck",
+        "sameAs":[
+            "https://twitter.com/mxbck",
+            "https://github.com/maxboeck"
+        ],
+        "@context":"http://schema.org"
+    }
+</script>
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/images/favicon/apple-touch-icon.png?v=1">
+<link rel="icon" type="image/png" href="/assets/images/favicon/favicon-32x32.png?v=1" sizes="32x32">
+<link rel="icon" type="image/png" href="/assets/images/favicon/favicon-16x16.png?v=1" sizes="16x16">
+<link rel="mask-icon" href="/assets/images/favicon/safari-pinned-tab.svg?v=1" color="#1a1a1a">
+<link rel="shortcut icon" href="/assets/images/favicon/favicon.ico?v=1">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#1a1a1a">
+
+
+<link type="application/atom+xml" rel="alternate" href="https://mxb.dev/feed.xml" title="Max Böck">
+<link type="application/atom+xml" rel="alternate" href="https://mxb.dev/notes/feed.xml" title="Max Böck | Notes">
+
+
+<link rel="authorization_endpoint" href="https://indieauth.com/auth" />
+<link rel="token_endpoint" href="https://tokens.indieauth.com/token" />
+<meta name="monetization" content="$ilp.uphold.com/7qZLaNKjDa87">
+
+
+<link rel="pingback" href="https://webmention.io/mxb.dev/xmlrpc">
+<link rel="webmention" href="https://webmention.io/mxb.dev/webmention">
+        <script>(function() {
+    var theme = localStorage.getItem('theme');
+    window.metaColors = {'default':'#f7f7f9','dark':'#252526','beach':'#e3f6f5','choco':'#41312E','moomoo':'#f3e1d8','bowser':'#29293e','yoshi':'#f2ede9','rainbow':'#311b46','lobster':'#ffb9ad','hackernews':'#F8F8EC'};
+    if (theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', window.metaColors[theme]);
+    }
+})();</script>
+    </head>
+    <body>
+        <a href="#main" class="sr-skip-link">skip to main content</a>
+        <div class="titlebar">
+    <div class="titlebar__inner"></div>
+</div>
+
+        <div class="hfeed layout" role="document">
+            <div class="themepicker js-themepicker" data-nosnippet hidden>
+    <h3 class="themepicker__title">Select Theme</h3>
+    <ul class="themepicker__list" id="theme-menu">
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Classic'" 
+                data-theme="default" 
+            >
+                <span class="themepicker__name">Classic</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Dark'" 
+                data-theme="dark" 
+            >
+                <span class="themepicker__name">Dark</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Koopa Beach'" 
+                data-theme="beach" 
+            >
+                <span class="themepicker__name">Koopa Beach</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Choco Mountain'" 
+                data-theme="choco" 
+            >
+                <span class="themepicker__name">Choco Mountain</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Moo Moo Farm'" 
+                data-theme="moomoo" 
+            >
+                <span class="themepicker__name">Moo Moo Farm</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Bowser&#39;s Castle'" 
+                data-theme="bowser" 
+            >
+                <span class="themepicker__name">Bowser&#39;s Castle</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Yoshi Valley'" 
+                data-theme="yoshi" 
+            >
+                <span class="themepicker__name">Yoshi Valley</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Rainbow Road'" 
+                data-theme="rainbow" 
+            >
+                <span class="themepicker__name">Rainbow Road</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Lobster Life'" 
+                data-theme="lobster" 
+            >
+                <span class="themepicker__name">Lobster Life</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Hacker News'" 
+                data-theme="hackernews" 
+            >
+                <span class="themepicker__name">Hacker News</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+    </ul>
+    <button class="iconbtn themepicker__close js-themepicker-close">
+        <span class="sr-only">close themepicker</span>
+        <svg class="icon icon--close" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-close"></use></svg>
+    </button>
+</div>
+            <header class="header" role="banner">
+    <div class="header__inner container">
+
+        <a class="header__brand" href="/" rel="home">
+            <img class="header__avatar" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAgICAgJCAkKCgkNDgwODRMREBARExwUFhQWFBwrGx8bGx8bKyYuJSMlLiZENS8vNUROQj5CTl9VVV93cXecnNEBCAgICAkICQoKCQ0ODA4NExEQEBETHBQWFBYUHCsbHxsbHxsrJi4lIyUuJkQ1Ly81RE5CPkJOX1VVX3dxd5yc0f/CABEIAJYAlgMBIgACEQEDEQH/xAAcAAABBQEBAQAAAAAAAAAAAAAAAQQFBgcDAgj/2gAIAQEAAAAA2dVAUABRQOaqB4j+T5x7AVQ5qp5zDGotHehbbIigp4VTDcjlLvZpZr60VyooeVVh8g8NX0911bRziyPBQRSv/J3G6a3cfbWMrN8mfQogtc+UGFj3+w9o+KoGiW5yKvlSG+T4XU9d85hZOVfuWgyIq+VWjVZl3tvqIlyr+tIlVURSHZsa/Iyy8HdQ56NJCiKcYauwzuwc/ELWJfSpUURRWlBZQ944FTbvtGmfSiKKRcJUGdxeZ2ysGjSqqAopCViq0rvDzl30x+egUUWKqfqH41xjWdU0SXVVFUoFPuzjkR2X1XxJz9+0R8q1LJ6BI6pcetDoECHVx1k/prO8orfB756dmicenXx57r60/MWnLzKM+p4F8dU5dPXP/8QAGQEBAAMBAQAAAAAAAAAAAAAAAAEDBAUC/9oACAECEAAAAPYAPGeu3UCjE8dOwKMUeNusRzc5q6KYV8iPWnozEw5mX3t3IHMzOnpTEKqL7kR6RIiX/8QAGQEBAAMBAQAAAAAAAAAAAAAAAAECBQME/9oACAEDEAAAAKAAv6evDyg7adpx+Yd9O1svyidn0Izs9MT02rXyvATMavsrmeIlGr7Iy/IrZbt348BEgH//xAA+EAACAQMDAQUFBQUGBwAAAAABAgMABBEFEiExBhMiQVEUMDJhcQdigZGhIDNSkrEQFSNCcsFAQ1Njg9Hh/9oACAEBAAE/AP8AiXkRBl2AHzNS61o8AzLqNsn+qRRSdodDk+HVLU/+Raiv7GYkRXcLn0VwaEiHow967pGpd2AUdSa7S/aHBZia201e8nGQZT8CGr/WNS1KUvd300xPBDt4f5RgUVaPJWMbfVByPyoPcA8ZIqO6vYXDqGVuhK+E4P0rQ+3lzbvFFfK7pwO83nI+orT9Rtb2JXglDj3nb/tqXnfS7CUiOM4mderP/CKaR5DwMVY6NPdlF8fiPHFWPYptoZpTVl2VtYf3oD0dAsCuO4XAGKm7NaU6FHgFaRHJolxHb5L2sjYjb+Buu01HMGANA/tY/t1PPsVxhiv+G2WHlVzHskO7JOcs3qaSdt+EH6V2VaENGZBz55pQMDGMUkJIzihEMdKliqVcHmrLUCWMbHlTioJdw9z2muGh0e/KnBED/wBKu3kZjk5FRTtAMgeImtDuZMb2fwIdzHyH/s1ol288I3VbnwgGpcY4pquU4NPMbfWIVJws8J/mjOP6GrOTgGgcj3HaOFpdOvEQBnMD7QelXW1MsqZOPiNQOA+4jc2c5IrTjdX08FrCpwX8vWtJsFs7WOPOWxyagqaWCMEvIo+po3dvJ8Einy4Oa1bUIbO2knkbAUVFrE+qypI9i8QhYssh8wwxitGvO9iAJ5FQPlf2Mfsa1PbQWjm5cLEwKsScVqq2ouJRASUDnbj08qCbRznFfZ7aDfNcuBuxhaTirm57qMgzFM9MV2iuFjkhjlM83fHMaB2w2PmtaJYMiRYiaJD5Gu1sEss1haiYQwyFi8hGfhrS7W8gimMsqGMkDao+8cHNaHJtlIq1b3Graams6w63YV7a1jVY0Ybhvfkvg8ZxUvY3T59TnDReD/J4sAYH3aTsfokjzBVR5Y1K5UEIG/3IrQdP/u2WWDPwkig3ix5U9lDJ43TcfLNX+ny3kiZwAmdvAJGfSra0NvHEpYnA861XTUvLUhhkqdynzU+RqSBEtHwoBAH6GtLD+0KVqz5x7ieLurqWTH7xFz9R4auY9s25VOFwPyFQQxwwjahLRZC453gnz9DWrFLW+huAvD5Vh9Kt3V1R1OVIBFR9KcKOa9oDgD72BSeJcMcZrUykZmVCOeo+ea0fHfgGrID3E8QljZTwfI1P3xkRSo5fOfIgj/5Wr63b6ON86S7GbapQZNXs/t9kLxPhLhk+jCtKYNBx0zStUuSjc0ohEQj2hqu0aIkRRnefPLE0jOLi8idiSojzznBOTitMJFylWbcj3MsAZ0bzBNdr9M9vMIzjux+rHFadai309rTO5Ysp+BqDVRaXRiY4zJyDUciOAynII4NXkck0LRROULcFh1FC1aCMbLiUKo6ZBP5kVf30XeMpnuWz5M5A/MUUhQJ3aBSy5fAxyOBWnOBcLVpyFxS9PcYq/slmXIXnOaubMQIDjhuCc5q/0uCdpWmTGTlT6GtL1I2Efs10cqrYVqhuIHKgODkZp4O8UgNgGu0lvBDKjBgQoxketQ3cM3dBOoi8X1zWjxCSbJ8qsU8ND3JFatCq228DGHFP4121qehTTK/cOM+QanOs6VLl4pAVGNw5FL2z1FFEZDHFXOoajqUpAjcZPI6DJ8606IWMDvPKO8Px84C/KuzVzFMzFHVh6g5qzxj3esMosyuRlmGB9KUUYz5VeQmaVYgMg9al7NabLEWeAA46in7OujkQtgVqGnT2tncTysMbNoUjO4ngCtJvLrSpO9t5grY2nIyDWi/aNZDEeo20kb+ckXjSrLXtGvxm11GB/u78N+RocjI9x2p7dW+j3A0+zjW4vv8APk4jgH360ztLd3+rZv5Q/exGNMDaqlTkACguMVtGKEK7unJq8wkQQdTSoFYknAAOSeBXabWl1CZbe3YezwMSH/jfpn6CmJKbvQVbt4hx1pZlAzJGpGeM85rT+0F9ZsO4uni+4G4H4Vp3b8h0ivoRID/zIuD+VWOoWWoQ99aTrKnnjqD6EeX9vABJOAK1Ltv2esGkj9pM8qdVgG8A+hfoDXaP7RNTv0eO1zaWvTbG+JZSfIvUSyCN5XOXkbn555JqKZ42EiPhhyPusOa0TtJa30aRTSJHcgY2k4Df6ajUkDjrUsltaxmSeVIwBklyF/rWrds9Hicm2c3bjp3XwfzmtS1/UNUykjd3AesSZwR94+dSt4Tjn6+ZoL/gSt8sYq1O7afQZNSSYKEZ3McIP4QKUAZRTjHMjH+ld8uGVFIGfi86tdWkszmCaWElcErkZ/lpmVFLMwVQMkk4ArWvtEsrYvDpUPtko6yk7YF/HzrVdf1PVmJ1G/eVP+hGTHAPwHWriZm2RLgKo4VeAB8hTRB5kjzxGMn5s1Og8G7og4qFgoB6g9aIBkPPzwaF1qQUKt7dKPQTyD/epEeUh5naQg8NIxdgfq2ayAOTuOegrxEn9cUemMn55ojFu/NWir3Qx1am3e0Tv17lQv4mg+yJU6sfETS8c5JP61vAbkcAYrtx2imu5bjTowUt4Hw485HWpHYg7jkdaY+HI68moV3y5OOvSrVi0s7/APcY/lxS7TvGOcYzUDYOwrnBOKnQlRIG5FLIZFHJraflyaHClh1Jx0pUABI8hzXQ5q6OLMkZG45q16Q4J/dg/nUHMIJ5Mp71j8m6ClwfF0Hp8hTEggZ6YoHw7sdSa//EACQRAAEEAgEEAgMAAAAAAAAAAAEAAgMRICEEEjFCUTBBYXGB/9oACAECAQE/APkc5Ola0ozj0opw4gZlPFOKLRVoWDYUT+tuRIUjrcg76DbQdZUDqNZStc2Q7PtOOztA6Q2dKDuP3lJG17dp7el9I0Eemh2UPiRnyxUiAJXQT41+Vxx2z5ZJl/gVEoj6C40ZjZvuVatVhLC2Qb0faHErzUcEbDYFn2cK+P8A/8QAJhEAAQQABgEEAwAAAAAAAAAAAQACAxEEEiAhMVEiEDBBcWGBof/aAAgBAwEBPwD3GttMge4bCghhD2pcOWAnW1ROtoWY3SIDgQVIzI8jULtQtpgJRbvZcAntyhYgb6QoXtfC00OAOPlMAy8L54vpGwN1iuT9aopXxu8TzyFG/Oy+0Cmgm7KxB8na8Ebi/aNIPDb8r/ACxJ8nbEa8IKi+yUHAIO2WKlEsm3AFBZVl9a9IpnRHbcdI4u+Gf1SYiSQUTQ6Gkce1/9k=" width="48" height="48" alt="" />
+            <span class="header__name">
+                <span>Max Böck</span>
+                <span class="header__verification" aria-hidden="true">
+                    <svg class="icon icon--verified" version="1.1" viewBox="0,0,24,24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.71-3.998-3.818-3.998-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.437 2.25c-.415-.165-.866-.25-1.336-.25-2.11 0-3.818 1.79-3.818 4 0 .494.083.964.237 1.4-1.272.65-2.147 2.018-2.147 3.6 0 1.495.782 2.798 1.942 3.486-.02.17-.032.34-.032.514 0 2.21 1.708 4 3.818 4 .47 0 .92-.086 1.335-.25.62 1.334 1.926 2.25 3.437 2.25 1.512 0 2.818-.916 3.437-2.25.415.163.865.248 1.336.248 2.11 0 3.818-1.79 3.818-4 0-.174-.012-.344-.033-.513 1.158-.687 1.943-1.99 1.943-3.484zm-6.616-3.334l-4.334 6.5c-.145.217-.382.334-.625.334-.143 0-.288-.04-.416-.126l-.115-.094-2.415-2.415c-.293-.293-.293-.768 0-1.06s.768-.294 1.06 0l1.77 1.767 3.825-5.74c.23-.345.696-.436 1.04-.207.346.23.44.696.21 1.04z"/>
+                    </svg>
+                </span>
+            </span>
+        </a>
+
+        <div class="header__nav">
+            <nav class="nav js-nav" role="navigation" tabindex="-1">
+
+    
+    <button
+        class="iconbtn nav__togglebtn js-nav-toggle"
+        aria-expanded="false"
+        aria-controls="nav-menu"
+        aria-label="toggle menu"
+    >
+        <span class="menuicon">
+            <span class="menuicon__bar"></span>
+            <span class="menuicon__bar"></span>
+            <span class="menuicon__bar"></span>
+            <span class="menuicon__bar"></span>
+        </span>
+    </button>
+
+    
+    <div class="nav__content">
+        <ul class="nav__menu js-nav-menu" id="nav-menu"><li class="nav__item">
+                    <a
+                        href="/"
+                        class="nav__link"
+                        
+                    >
+                        <span class="nav__num" aria-hidden="true">01</span>
+                        Home
+                    </a>
+                </li><li class="nav__item nav__item--active">
+                    <a
+                        href="/blog/"
+                        class="nav__link"
+                        
+                    >
+                        <span class="nav__num" aria-hidden="true">02</span>
+                        Writing
+                    </a>
+                </li><li class="nav__item">
+                    <a
+                        href="/notes/"
+                        class="nav__link"
+                        
+                    >
+                        <span class="nav__num" aria-hidden="true">03</span>
+                        Notes
+                    </a>
+                </li><li class="nav__item">
+                    <a
+                        href="/about/"
+                        class="nav__link"
+                        
+                    >
+                        <span class="nav__num" aria-hidden="true">04</span>
+                        About
+                    </a>
+                </li></ul>
+    </div>
+    
+    
+    <div class="nav__bg">
+        <div class="nav__bg__circle"></div>
+    </div>
+
+</nav>
+
+            <button
+                class="iconbtn header__themebtn js-themepicker-toggle"
+                aria-expanded="false"
+                aria-controls="theme-menu"
+            >
+                <span class="sr-only">toggle theme panel</span>
+                <svg class="icon icon--theme" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true">
+                    <path d="M18 4V3c0-.55-.45-1-1-1H5c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h12c.55 0 1-.45 1-1V6h1v4H9v11c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-9h8V4h-3z"/>
+                </svg>
+            </button>
+        </div>
+
+    </div>
+</header>
+
+            <main class="main container" role="main" id="main" tabindex="-1">
+                <article 
+    id="syndicating-content-to-twitter" 
+    class="post h-entry" 
+    role="article" 
+    itemscope 
+    itemtype="http://schema.org/BlogPosting" 
+    aria-labelledby="syndicating-content-to-twitter-title" 
+>
+    <header class="post__header">
+        <h1 id="syndicating-content-to-twitter-title" class="post__title p-name title" itemprop="headline">Syndicating Content to Twitter</h1>
+        <div class="post__meta">
+
+            <p class="u-mr2">
+                <time class="post__date dt-published" itemprop="datePublished" datetime="2019-01-06T00:00:00">06 Jan 2019</time>
+                
+                <span aria-label="in category">&sdot;</span> <span class="post__tags p-category">code</span>
+                
+                
+            </p>
+
+            
+            <a href="https://gist.github.com/maxboeck/77c3c8e244f190147cca2f7383d5f183" class="btn btn--primary post__demo" target="_blank" rel="noopener noreferrer">
+                View Demo
+            </a>
+            
+
+        </div>
+    </header>
+
+    <div class="post__content e-content markdown" itemprop="articleBody">
+        <p class="lead">One of the core principles of the <a href="https://indieweb.org/">IndieWeb</a> is that people should own their own content. Controlling how and where they publish makes users more independent from big content silos.</p>
+<p>However, the main reason why people publish on Twitter / Medium or other platforms is that they can reach a much bigger audience there - everyone’s on them, so you have to be too. Publishing on a personal site can cut you off from those readers. That’s why it might be a good idea to automatically post copies of your content on these sites whenever you publish something new.</p>
+<p>This practice is known as “<abbr title="Publish on Own Site, Syndicate Elsewhere">POSSE</abbr>” (Publish on your Own Site, Syndicate Elsewhere). It enables authors to reach people on other platforms while still keeping control of the original content source.</p>
+<p>For the recent relaunch of my personal website, I wanted to embrace some of these ideas. I included a section called <a href="/notes">notes</a> featuring small, random pieces of content - much like tweets. These notes are perfect candidates for syndication to Twitter.</p>
+<h2 id="h-syndication-on-static-sites"><a class="heading-anchor" href="#h-syndication-on-static-sites" aria-hidden="true">#</a> Syndication on Static Sites</h2>
+<p>My site is built with <a href="https://11ty.io">Eleventy</a>, a static site generator based on node, and hosted on <a href="https://netlify.com">Netlify</a>. Static sites are awesome for a variety of reasons, but interacting with other platforms typically requires some serverside code - which they don’t have.</p>
+<p>Luckily though, Netlify provides a service called <a href="https://www.netlify.com/docs/functions/">“Functions”</a>, which lets you write custom AWS lambda functions without the hassle of dealing with AWS directly. Perfect! 🤘</p>
+<h2 id="h-a-content-feed"><a class="heading-anchor" href="#h-a-content-feed" aria-hidden="true">#</a> A content feed</h2>
+<p>The first step is to publish a machine-readable feed of the content we want to syndicate. That’s exactly what RSS-Feeds are for - but they’re usually in XML format, which is not ideal in this case.</p>
+<p>For my own site, I chose to provide notes as a simple JSON object. I already have an atom feed for content readers, and JSON makes the note processing easier later on.</p>
+<p><a href="https://mxb.dev/notes.json">My feed</a> looks something like this:</p>
+<pre class="language-js"><code class="language-js"><span class="token comment">// notes.json</span><br><span class="token punctuation">[</span><br>    <span class="token punctuation">{</span><br>        <span class="token string-property property">"id"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span><br>        <span class="token string-property property">"date"</span><span class="token operator">:</span> <span class="token string">"2018-12-02T14:20:17"</span><span class="token punctuation">,</span><br>        <span class="token string-property property">"url"</span><span class="token operator">:</span> <span class="token string">"https://mxb.dev/notes/2018-12-02/"</span><span class="token punctuation">,</span><br>        <span class="token string-property property">"content"</span><span class="token operator">:</span> <span class="token string">"Here's my first note!"</span><span class="token punctuation">,</span><br>        <span class="token string-property property">"syndicate"</span><span class="token operator">:</span> <span class="token boolean">true</span><br>    <span class="token punctuation">}</span><span class="token punctuation">,</span><br>    <span class="token punctuation">{</span><span class="token operator">...</span><span class="token punctuation">}</span><br><span class="token punctuation">]</span></code></pre>
+<p>All entries also include a custom <code>syndicate</code> flag that overrides the auto-publishing behaviour if necessary.</p>
+<h2 id="h-event-triggered-functions"><a class="heading-anchor" href="#h-event-triggered-functions" aria-hidden="true">#</a> Event-Triggered Functions</h2>
+<p>Now for the tricky part: we need to write a lambda function to push new notes to Twitter. I won’t go into detail on how to build lambda functions on Netlify, there are already some great tutorials about this:</p>
+<ul>
+<li><a href="https://scotch.io/tutorials/build-and-deploy-a-serverless-function-to-netlify">Build and deploy a serverless function to Netlify</a> (scotch.io)</li>
+<li><a href="https://functions-playground.netlify.com/">Lambda functions playground</a> (netlify.com)</li>
+</ul>
+<div class="callout callout--tip"><span class="callout__icon"><svg class="icon icon--lightbulb" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-lightbulb"></use></svg></span><div class="callout__content"><p>Be sure to also check out the <a href="https://www.npmjs.com/package/netlify-lambda">netlify-lambda cli</a>, a very handy tool to test and build your functions in development.</p></div></div>
+<p>To trigger our custom function everytime a new version of the site was successfully deployed, we just need to name it <code>deploy-succeeded.js</code>. Netlify will then automatically fire it after each new build, while also making sure it’s not executable from the outside.</p>
+<p>Whenever that function is invoked, it should fetch the list of published notes from the JSON feed. It then needs to check if any new notes were published, and whether they should be syndicated to Twitter.</p>
+<pre class="language-js"><code class="language-js"><span class="token comment">// deploy-succeeded.js</span><br>exports<span class="token punctuation">.</span><span class="token function-variable function">handler</span> <span class="token operator">=</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span><br>    <span class="token keyword">return</span> <span class="token function">fetch</span><span class="token punctuation">(</span><span class="token string">'https://mxb.dev/notes.json'</span><span class="token punctuation">)</span><br>        <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token parameter">response</span> <span class="token operator">=></span> response<span class="token punctuation">.</span><span class="token function">json</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><br>        <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span>processNotes<span class="token punctuation">)</span><br>        <span class="token punctuation">.</span><span class="token function">catch</span><span class="token punctuation">(</span><span class="token parameter">err</span> <span class="token operator">=></span> <span class="token punctuation">(</span><span class="token punctuation">{</span><br>            <span class="token literal-property property">statusCode</span><span class="token operator">:</span> <span class="token number">422</span><span class="token punctuation">,</span><br>            <span class="token literal-property property">body</span><span class="token operator">:</span> <span class="token function">String</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span><br>        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><br><span class="token punctuation">}</span></code></pre>
+<p>Since we will have to interact with the Twitter API, it’s a good idea to use a dedicated helper class to take some of that complexity off our hands. The <code>twitter</code> <a href="https://www.npmjs.com/package/twitter">package on npm</a> does just that. We will have to register for a <a href="https://apps.twitter.com/">developer account</a> on Twitter first though, to get the necessary API keys and tokens. Store those in your project’s <code>.env</code> file.</p>
+<pre class="language-bash"><code class="language-bash"><span class="token assign-left variable">TWITTER_CONSUMER_KEY</span><span class="token operator">=</span>YourTwitterConsumerKeyHere<br><span class="token assign-left variable">TWITTER_CONSUMER_SECRET</span><span class="token operator">=</span>YourTwitterConsumerSecretStringHere<br><span class="token assign-left variable">TWITTER_ACCESS_TOKEN_KEY</span><span class="token operator">=</span><span class="token number">12345678</span>-YourTwitterAccessTokenKeyHere<br><span class="token assign-left variable">TWITTER_ACCESS_TOKEN_SECRET</span><span class="token operator">=</span>YourTwitterAccessTokenSecretStringHere</code></pre>
+<p>Use these keys to initialize your personal Twitter client, which will handle the posting for your account.</p>
+<pre class="language-js"><code class="language-js"><span class="token comment">// Configure Twitter API Client</span><br><span class="token keyword">const</span> twitter <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Twitter</span><span class="token punctuation">(</span><span class="token punctuation">{</span><br>    <span class="token literal-property property">consumer_key</span><span class="token operator">:</span> process<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">TWITTER_CONSUMER_KEY</span><span class="token punctuation">,</span><br>    <span class="token literal-property property">consumer_secret</span><span class="token operator">:</span> process<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">TWITTER_CONSUMER_SECRET</span><span class="token punctuation">,</span><br>    <span class="token literal-property property">access_token_key</span><span class="token operator">:</span> process<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">TWITTER_ACCESS_TOKEN_KEY</span><span class="token punctuation">,</span><br>    <span class="token literal-property property">access_token_secret</span><span class="token operator">:</span> process<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">TWITTER_ACCESS_TOKEN_SECRET</span><br><span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+<p>Right. Now we need to look at the <code>notes</code> array and figure out what to do. To keep it simple, let’s assume the latest note is a new one we just pushed. Since the JSON feed lists notes in descending date order, that would be the first item in the array.</p>
+<p>We can then search twitter for tweets containing the latest note’s URL (we will include that in every syndicated tweet to link back to the original source). If we find anything, then it’s already been published and we don’t need to do anything. If not, we’ll go ahead.</p>
+<pre class="language-js"><code class="language-js"><span class="token keyword">const</span> <span class="token function-variable function">processNotes</span> <span class="token operator">=</span> <span class="token keyword">async</span> <span class="token parameter">notes</span> <span class="token operator">=></span> <span class="token punctuation">{</span><br>    <span class="token comment">// assume the last note was not yet syndicated</span><br>    <span class="token keyword">const</span> latestNote <span class="token operator">=</span> notes<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><br><br>    <span class="token comment">// check if the override flag for this note is set</span><br>    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>latestNote<span class="token punctuation">.</span>syndicate<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>        <span class="token keyword">return</span> <span class="token punctuation">{</span><br>            <span class="token literal-property property">statusCode</span><span class="token operator">:</span> <span class="token number">400</span><span class="token punctuation">,</span><br>            <span class="token literal-property property">body</span><span class="token operator">:</span> <span class="token string">'Latest note has disabled syndication.'</span><br>        <span class="token punctuation">}</span><br>    <span class="token punctuation">}</span><br><br>    <span class="token comment">// check twitter for any tweets containing note URL.</span><br>    <span class="token comment">// if there are none, publish it.</span><br>    <span class="token keyword">const</span> search <span class="token operator">=</span> <span class="token keyword">await</span> twitter<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'search/tweets'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> <span class="token literal-property property">q</span><span class="token operator">:</span> latestNote<span class="token punctuation">.</span>url <span class="token punctuation">}</span><span class="token punctuation">)</span><br>    <span class="token keyword">if</span> <span class="token punctuation">(</span>search<span class="token punctuation">.</span>statuses <span class="token operator">&amp;&amp;</span> search<span class="token punctuation">.</span>statuses<span class="token punctuation">.</span>length <span class="token operator">===</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>        <span class="token keyword">return</span> <span class="token function">publishNote</span><span class="token punctuation">(</span>latestNote<span class="token punctuation">)</span><br>    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span><br>        <span class="token keyword">return</span> <span class="token punctuation">{</span><br>            <span class="token literal-property property">statusCode</span><span class="token operator">:</span> <span class="token number">400</span><span class="token punctuation">,</span><br>            <span class="token literal-property property">body</span><span class="token operator">:</span> <span class="token string">'Latest note was already syndicated.'</span><br>        <span class="token punctuation">}</span><br>    <span class="token punctuation">}</span><br><span class="token punctuation">}</span></code></pre>
+<p>Next, we need to prepare the tweet we want to send. Since our self-published note does not have the same restrictions that twitter has, we should format its content first.</p>
+<p>My implementation simply strips all HTML tags from the content, makes sure it is not too long for Twitter’s limit, and includes the source url at the end. It’s also worth noting that Eleventy will escape the output in the JSON feed, so characters like <code>&quot;</code> will be encoded to <code>&amp;quot;</code> entities. We need to reverse that before posting.</p>
+<pre class="language-js"><code class="language-js"><span class="token comment">// Prepare the content string for tweet format</span><br><span class="token keyword">const</span> <span class="token function-variable function">prepareStatusText</span> <span class="token operator">=</span> <span class="token parameter">note</span> <span class="token operator">=></span> <span class="token punctuation">{</span><br>    <span class="token keyword">const</span> maxLength <span class="token operator">=</span> <span class="token number">200</span><br><br>    <span class="token comment">// strip html tags and decode entities</span><br>    <span class="token keyword">let</span> text <span class="token operator">=</span> note<span class="token punctuation">.</span>content<span class="token punctuation">.</span><span class="token function">trim</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">&lt;[^>]+></span><span class="token regex-delimiter">/</span><span class="token regex-flags">g</span></span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span><br>    text <span class="token operator">=</span> entities<span class="token punctuation">.</span><span class="token function">decode</span><span class="token punctuation">(</span>text<span class="token punctuation">)</span><br><br>    <span class="token comment">// truncate note text if its too long for a tweet.</span><br>    <span class="token keyword">if</span> <span class="token punctuation">(</span>text<span class="token punctuation">.</span>length <span class="token operator">></span> maxLength<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>        text <span class="token operator">=</span> text<span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> maxLength<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">'...'</span><br>    <span class="token punctuation">}</span><br><br>    <span class="token comment">// include the note url at the end.</span><br>    text <span class="token operator">=</span> text <span class="token operator">+</span> <span class="token string">' '</span> <span class="token operator">+</span> note<span class="token punctuation">.</span>url<br>    <span class="token keyword">return</span> text<br><span class="token punctuation">}</span></code></pre>
+<p>When everything is done, we just need to send our note off to Twitter:</p>
+<pre class="language-js"><code class="language-js"><span class="token comment">// Push a new note to Twitter</span><br><span class="token keyword">const</span> <span class="token function-variable function">publishNote</span> <span class="token operator">=</span> <span class="token keyword">async</span> <span class="token parameter">note</span> <span class="token operator">=></span> <span class="token punctuation">{</span><br>    <span class="token keyword">const</span> statusText <span class="token operator">=</span> <span class="token function">prepareStatusText</span><span class="token punctuation">(</span>note<span class="token punctuation">)</span><br>    <span class="token keyword">const</span> tweet <span class="token operator">=</span> <span class="token keyword">await</span> twitter<span class="token punctuation">.</span><span class="token function">post</span><span class="token punctuation">(</span><span class="token string">'statuses/update'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><br>        <span class="token literal-property property">status</span><span class="token operator">:</span> statusText<br>    <span class="token punctuation">}</span><span class="token punctuation">)</span><br>    <span class="token keyword">if</span> <span class="token punctuation">(</span>tweet<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>        <span class="token keyword">return</span> <span class="token punctuation">{</span><br>            <span class="token literal-property property">statusCode</span><span class="token operator">:</span> <span class="token number">200</span><span class="token punctuation">,</span><br>            <span class="token literal-property property">body</span><span class="token operator">:</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Note </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>note<span class="token punctuation">.</span>date<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> successfully posted to Twitter.</span><span class="token template-punctuation string">`</span></span><br>        <span class="token punctuation">}</span><br>    <span class="token punctuation">}</span><br><span class="token punctuation">}</span></code></pre>
+<p>Hopefully that all worked, and you should end up with something like this in your timeline:</p>
+<blockquote class="twitter-tweet" data-lang="de"><p lang="en" dir="ltr">I did some housekeeping over the holidays and switched my website to <a href="https://twitter.com/eleven_ty?ref_src=twsrc%5Etfw">@eleven_ty</a> and <a href="https://twitter.com/Netlify?ref_src=twsrc%5Etfw">@Netlify</a> !<br><br>👉 <a href="https://t.co/oq0OyPyjRs">https://t.co/oq0OyPyjRs</a></p>&mdash; Max Böck (@mxbck) <a href="https://twitter.com/mxbck/status/1081178633513910272?ref_src=twsrc%5Etfw">January 4, 2019</a></blockquote>
+<p>🎉 You can find the <a href="https://gist.github.com/maxboeck/77c3c8e244f190147cca2f7383d5f183">finished lambda function</a> here.</p>
+<aside class="signup js-signup-widget" data-nosnippet><div class="signup__front"><h2 class="signup__title">By the way...</h2><div class="signup__desc">I'm running an email list for people interested in personal websites and the IndieWeb! If you enjoy that kind of stuff, you can join here and I'll notify you whenever I publish a new post. No strings attached, unsubscribe anytime.</div><div class="signup__form"><form action="https://dev.us18.list-manage.com/subscribe/post" method="POST" class="form form--signup"><div class="form__body"><input type="hidden" name="u" value="64781452976687d0f4f2ea370"> <input type="hidden" name="id" value="772b9208b5"> <input type="hidden" name="SOURCE" value="/blog/syndicating-content-to-twitter-with-netlify-functions/"><div class="form__fields"><p class="form__field"><label for="mce-FNAME" class="form__label">First Name (optional)</label> <input type="text" class="form__input" value="" name="FNAME" id="mce-FNAME" placeholder="Bob"></p><p class="form__field"><label for="mce-EMAIL" class="form__label">Email Address</label> <input type="email" class="form__input" value="" name="EMAIL" id="mce-EMAIL" placeholder="bob@gmail.com" required></p></div><div class="sr-only" aria-hidden="true"><input type="text" name="b_64781452976687d0f4f2ea370_772b9208b5" tabindex="-1" value=""></div></div><div class="form__actions"><button type="submit" class="btn btn--primary" name="subscribe">Subscribe</button><div class="form__feedback js-signup-widget-feedback" hidden></div><div class="spinner"><div class="spinner__layercontainer"><div class="spinner__layer spinner__layer--1"><div class="spinner__circle-clipper spinner__left"><div class="spinner__circle"></div></div><div class="spinner__gap-patch"><div class="spinner__circle"></div></div><div class="spinner__circle-clipper spinner__right"><div class="spinner__circle"></div></div></div><div class="spinner__layer spinner__layer--2"><div class="spinner__circle-clipper spinner__left"><div class="spinner__circle"></div></div><div class="spinner__gap-patch"><div class="spinner__circle"></div></div><div class="spinner__circle-clipper spinner__right"><div class="spinner__circle"></div></div></div><div class="spinner__layer spinner__layer--3"><div class="spinner__circle-clipper spinner__left"><div class="spinner__circle"></div></div><div class="spinner__gap-patch"><div class="spinner__circle"></div></div><div class="spinner__circle-clipper spinner__right"><div class="spinner__circle"></div></div></div><div class="spinner__layer spinner__layer--4"><div class="spinner__circle-clipper spinner__left"><div class="spinner__circle"></div></div><div class="spinner__gap-patch"><div class="spinner__circle"></div></div><div class="spinner__circle-clipper spinner__right"><div class="spinner__circle"></div></div></div></div></div></div></form></div></div><div class="signup__back js-signup-backside"></div><div class="signup__icon"><svg class="icon icon--check" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-check"></use></svg></div></aside>
+<h2 id="h-further-resources"><a class="heading-anchor" href="#h-further-resources" aria-hidden="true">#</a> Further Resources</h2>
+<ul>
+<li><a href="https://indieweb.org/note">Indieweb Notes</a> The concept behind this.</li>
+<li><a href="https://github.com/philhawksworth/eleventyone">eleventyone by Phil Hawksworth</a> A starter for Eleventy sites, including lambda functions and <code>netlify-lambda</code>.</li>
+<li><a href="https://developer.twitter.com/en/docs/tweets/post-and-engage/api-reference/post-statuses-update.html">Twitter API Docs</a></li>
+</ul>
+
+    </div>
+
+    <div class="post__footer">
+        <div hidden>
+            <a class="u-url" href="https://mxb.dev/blog/syndicating-content-to-twitter-with-netlify-functions/">Syndicating Content to Twitter</a>
+            <p class="h-card p-author">
+                <a class="p-name u-url" rel="author" href="https://mxb.dev">Max Böck</a>
+                <img class="u-photo" src="https://mxb.dev/assets/images/avatar2.jpg" />
+            </p>
+        </div>
+
+        
+            <p class="post__footer__info">
+                Published in [code] &sdot; 06 Jan 2019 <br/>
+                <a href="https://github.com/maxboeck/mxb/tree/master/./src/posts/syndicating-content-to-twitter-with-netlify-functions/2019-01-06-index.md" title="suggest a change to this post by submitting a PR">Edit this Post</a>
+            </p>
+
+            <a
+                href="https://front-end.social/@mxbck"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Follow Max Böck on Mastodon"
+                class="btn btn--mastodon"
+            >
+                <svg class="icon icon--mastodon" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-mastodon"></use></svg> Follow @mxbck
+            </a>
+        
+    </div>
+</article>
+
+
+<div class="postsection">
+    <div class="postsection__header">
+        <h3 class="postsection__title u-mb0">Webmentions</h3>
+        <a href="https://indieweb.org/Webmention" class="postsection__info" target="_blank" rel="noopener noreferrer">
+            <svg class="icon icon--question" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-question"></use></svg> What’s this?
+        </a>
+    </div><div
+    class="webmentions" 
+    id="webmentions"
+    data-url="https://mxb.dev/blog/syndicating-content-to-twitter-with-netlify-functions/"
+    data-last-fetched=""
+>
+    <div data-render-root>
+        
+            <p class="webmentions__empty">No webmentions yet.</p>
+        
+    </div>
+</div>
+</div>
+
+<div class="postsection">
+    <h3 class="postsection__title">Other things I've written</h3>
+    
+
+<ol class="otherposts">
+    
+        <li class="otherposts__item">
+            <a href="/blog/seven-reasons-why-i-dont-write/" class="otherposts__link ">
+                <span class="otherposts__title">7 Reasons why I don&#39;t write</span>
+                <time class="otherposts__date" datetime="2023-01-30T00:00:00" aria-label=", written 30 Jan 2023">
+                    30 Jan 2023
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/the-indieweb-for-everyone/" class="otherposts__link ">
+                <span class="otherposts__title">The IndieWeb for Everyone</span>
+                <time class="otherposts__date" datetime="2022-11-12T00:00:00" aria-label=", written 12 Nov 2022">
+                    12 Nov 2022
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/make-free-stuff/" class="otherposts__link ">
+                <span class="otherposts__title">Make Free Stuff</span>
+                <time class="otherposts__date" datetime="2022-01-25T00:00:00" aria-label=", written 25 Jan 2022">
+                    25 Jan 2022
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/media-queries-in-times-of-container-queries/" class="otherposts__link ">
+                <span class="otherposts__title">Media Queries in Times of @container</span>
+                <time class="otherposts__date" datetime="2021-06-11T00:00:00" aria-label=", written 11 Jun 2021">
+                    11 Jun 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/container-queries-web-components/" class="otherposts__link ">
+                <span class="otherposts__title">Container Queries in Web Components</span>
+                <time class="otherposts__date" datetime="2021-05-15T00:00:00" aria-label=", written 15 May 2021">
+                    15 May 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/eleventy-asset-pipeline/" class="otherposts__link ">
+                <span class="otherposts__title">Asset Pipelines in Eleventy</span>
+                <time class="otherposts__date" datetime="2021-04-26T00:00:00" aria-label=", written 26 Apr 2021">
+                    26 Apr 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/medium-share-highlight-eleventy/" class="otherposts__link ">
+                <span class="otherposts__title">Medium-Style Share Highlights in Eleventy</span>
+                <time class="otherposts__date" datetime="2021-04-13T00:00:00" aria-label=", written 13 Apr 2021">
+                    13 Apr 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/space-jam/" class="otherposts__link ">
+                <span class="otherposts__title">Space Jam</span>
+                <time class="otherposts__date" datetime="2021-04-04T00:00:00" aria-label=", written 04 Apr 2021">
+                    04 Apr 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/webmention-analytics/" class="otherposts__link ">
+                <span class="otherposts__title">Webmention Analytics</span>
+                <time class="otherposts__date" datetime="2021-02-07T00:00:00" aria-label=", written 07 Feb 2021">
+                    07 Feb 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/persistent-build-folders-netlify/" class="otherposts__link ">
+                <span class="otherposts__title">Making Persistent Build Folders in Netlify</span>
+                <time class="otherposts__date" datetime="2021-01-05T00:00:00" aria-label=", written 05 Jan 2021">
+                    05 Jan 2021
+                </time>
+            </a>
+        </li>
+    
+</ol>
+</div>
+
+            </main>
+
+            <footer class="footer h-card" role="contentinfo">
+    <div class="footer__inner container">
+        <p class="footer__item">
+            <strong>&copy; 2012&ndash;2023</strong><br />
+            <a class="p-name u-url" rel="me" href="https://mxb.dev">Max Böck</a>
+        </p>
+
+        <p class="footer__item">
+            <strong>Subscribe</strong><br />
+            <a href="/mailinglist">Mailing List</a>
+        </p>
+
+        <p class="footer__item">
+            <strong>Social</strong><br />
+            <a href="https://front-end.social/@mxbck" title="Mastodon" rel="me" >Mastodon</a> / 
+            <a href="https://github.com/maxboeck" title="Github" rel="me">Github</a>
+        </p>
+
+        <p class="footer__item">
+            <strong>Legal</strong><br />
+            <a href="/privacy/">Privacy Policy</a>
+        </p>
+
+        <p class="footer__item">
+            <strong>Links</strong><br />
+            <a href="/blogroll/">Blogroll</a>
+        </p>
+
+        <p class="footer__item footer__item--right u-desktop-only">
+            <a href="https://speedlify.mxb.dev/mxb.dev/" class="footer__speedlify">
+                <speedlify-score speedlify-url="https://speedlify.mxb.dev" hash="7dda0135" score weight></speedlify-score>
+            </a>
+        </p>
+
+        <p class="footer__item footer__item--right">
+            <a href="https://github.com/maxboeck/mxb/tree/master/./src/posts/syndicating-content-to-twitter-with-netlify-functions/2019-01-06-index.md" class="footer__icon" title="Edit this page on Github">
+                <span class="sr-only">Edit this page on Github</span>
+                <svg class="icon icon--github" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-github"></use></svg>
+            </a>
+            <a href="/feed.xml" class="footer__icon" title="RSS Feed">
+                <span class="sr-only">RSS Feed</span>
+                <svg class="icon icon--feed" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-feed"></use></svg>
+            </a>
+        </p>
+
+    </div>
+</footer>
+        </div>
+
+        
+        <script src="/assets/scripts/main.js" defer></script><script src="/assets/scripts/webmentions.js" defer></script>
+            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></body>
+</html>
