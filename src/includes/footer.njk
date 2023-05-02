@@ -1,9 +1,12 @@
 <footer class="footer h-card" role="contentinfo">
     <div class="footer__inner container">
+
+<!--   
         <p class="footer__item">
             <strong>&copy; 2012&ndash;{{ build.timestamp | dateToFormat('yyyy') }}</strong><br />
             <a class="p-name u-url" rel="me" href="{{ site.url }}">{{ author.name }}</a>
         </p>
+-->
 
         <p class="footer__item">
             <strong>Subscribe</strong><br />
@@ -12,10 +15,11 @@
 
         <p class="footer__item">
             <strong>Social</strong><br />
-            <a href="{{ author.social.mastodon.url }}" title="Mastodon" rel="me" >Mastodon</a> / 
+            <a href="{{ author.social.twitter.url }}" title="Twitter" rel="me" >Twitter</a> / 
             <a href="{{ author.social.github.url }}" title="Github" rel="me">Github</a>
         </p>
 
+<!--
         <p class="footer__item">
             <strong>Legal</strong><br />
             <a href="/privacy/">Privacy Policy</a>
@@ -25,7 +29,7 @@
             <strong>Links</strong><br />
             <a href="/blogroll/">Blogroll</a>
         </p>
-
+-->
         <p class="footer__item footer__item--right u-desktop-only">
             <a href="https://speedlify.mxb.dev/mxb.dev/" class="footer__speedlify">
                 <speedlify-score speedlify-url="https://speedlify.mxb.dev" hash="7dda0135" score weight></speedlify-score>
@@ -37,10 +41,12 @@
                 <span class="sr-only">Edit this page on Github</span>
                 {% icon "github" %}
             </a>
+<!--
             <a href="{{ "/feed.xml" | url }}" class="footer__icon" title="RSS Feed">
                 <span class="sr-only">RSS Feed</span>
                 {% icon "feed" %}
             </a>
+-->
         </p>
 
     </div>

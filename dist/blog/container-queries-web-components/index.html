@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<!--!
+  Oh so you're an inspector?
+  View the source here: https://github.com/maxboeck/mxb
+-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Container Queries in Web Components | Max Böck</title>
+        <link rel="preload" href="/assets/fonts/noe-display-medium.woff2" as="font" type="font/woff2" crossorigin>
+        <link rel="preconnect" href="https://webmention.io">
+
+        <link rel="stylesheet" href="/assets/styles/themes.css">
+        <link rel="stylesheet" href="/assets/styles/main.css">
+
+        
+
+<meta name="description" content="Container Queries are one of the most anticipated new features in CSS. I recently got a chance to play with them a bit and came up with this demo."><meta name="image" content="https://mxb.dev/blog/container-queries-web-components/cover.jpg"><meta property="og:title" content="Container Queries in Web Components">
+<meta property="og:description" content="Container Queries are one of the most anticipated new features in CSS. I recently got a chance to play with them a bit and came up with this demo.">
+<meta property="og:url" content="https://mxb.dev/blog/container-queries-web-components/">
+<meta property="og:image" content="https://mxb.dev/blog/container-queries-web-components/cover.jpg">
+<meta name="twitter:card" content="summary_large_image">
+
+<meta property="og:type" content="article">
+    <meta property="article:published_time" content="2021-05-15T00:00:00">
+<meta name="author" content="Max Böck">
+<meta property="og:site_name" content="Max Böck">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:site" content="@mxbck">
+<meta name="twitter:creator" content="@mxbck">
+<meta property="fb:app_id" content="127677017332959">
+
+<link rel="canonical" href="https://mxb.dev/blog/container-queries-web-components/">
+
+
+<script type="application/ld+json">
+    {
+        "name":"Max Böck",
+        "description":"Max Böck is a professional front-end developer based in Vienna, Austria.",
+        "author": {
+            "@type":"Person",
+            "name":"Max Böck"
+        },
+        "@type":"WebSite",
+        "url":"https://mxb.dev",
+        "image":"https://mxb.dev/assets/images/avatar2.jpg",
+        "headline":"Max Böck",
+        "sameAs":[
+            "https://twitter.com/mxbck",
+            "https://github.com/maxboeck"
+        ],
+        "@context":"http://schema.org"
+    }
+</script>
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/images/favicon/apple-touch-icon.png?v=1">
+<link rel="icon" type="image/png" href="/assets/images/favicon/favicon-32x32.png?v=1" sizes="32x32">
+<link rel="icon" type="image/png" href="/assets/images/favicon/favicon-16x16.png?v=1" sizes="16x16">
+<link rel="mask-icon" href="/assets/images/favicon/safari-pinned-tab.svg?v=1" color="#1a1a1a">
+<link rel="shortcut icon" href="/assets/images/favicon/favicon.ico?v=1">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#1a1a1a">
+
+
+<link type="application/atom+xml" rel="alternate" href="https://mxb.dev/feed.xml" title="Max Böck">
+<link type="application/atom+xml" rel="alternate" href="https://mxb.dev/notes/feed.xml" title="Max Böck | Notes">
+
+
+<link rel="authorization_endpoint" href="https://indieauth.com/auth" />
+<link rel="token_endpoint" href="https://tokens.indieauth.com/token" />
+<meta name="monetization" content="$ilp.uphold.com/7qZLaNKjDa87">
+
+
+<link rel="pingback" href="https://webmention.io/mxb.dev/xmlrpc">
+<link rel="webmention" href="https://webmention.io/mxb.dev/webmention">
+        <script>(function() {
+    var theme = localStorage.getItem('theme');
+    window.metaColors = {'default':'#f7f7f9','dark':'#252526','beach':'#e3f6f5','choco':'#41312E','moomoo':'#f3e1d8','bowser':'#29293e','yoshi':'#f2ede9','rainbow':'#311b46','lobster':'#ffb9ad','hackernews':'#F8F8EC'};
+    if (theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', window.metaColors[theme]);
+    }
+})();</script>
+    </head>
+    <body>
+        <a href="#main" class="sr-skip-link">skip to main content</a>
+        <div class="titlebar">
+    <div class="titlebar__inner"></div>
+</div>
+
+        <div class="hfeed layout" role="document">
+            <div class="themepicker js-themepicker" data-nosnippet hidden>
+    <h3 class="themepicker__title">Select Theme</h3>
+    <ul class="themepicker__list" id="theme-menu">
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Classic'" 
+                data-theme="default" 
+            >
+                <span class="themepicker__name">Classic</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Dark'" 
+                data-theme="dark" 
+            >
+                <span class="themepicker__name">Dark</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Koopa Beach'" 
+                data-theme="beach" 
+            >
+                <span class="themepicker__name">Koopa Beach</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Choco Mountain'" 
+                data-theme="choco" 
+            >
+                <span class="themepicker__name">Choco Mountain</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Moo Moo Farm'" 
+                data-theme="moomoo" 
+            >
+                <span class="themepicker__name">Moo Moo Farm</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Bowser&#39;s Castle'" 
+                data-theme="bowser" 
+            >
+                <span class="themepicker__name">Bowser&#39;s Castle</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Yoshi Valley'" 
+                data-theme="yoshi" 
+            >
+                <span class="themepicker__name">Yoshi Valley</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Rainbow Road'" 
+                data-theme="rainbow" 
+            >
+                <span class="themepicker__name">Rainbow Road</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Lobster Life'" 
+                data-theme="lobster" 
+            >
+                <span class="themepicker__name">Lobster Life</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Hacker News'" 
+                data-theme="hackernews" 
+            >
+                <span class="themepicker__name">Hacker News</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+    </ul>
+    <button class="iconbtn themepicker__close js-themepicker-close">
+        <span class="sr-only">close themepicker</span>
+        <svg class="icon icon--close" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-close"></use></svg>
+    </button>
+</div>
+            <header class="header" role="banner">
+    <div class="header__inner container">
+
+        <a class="header__brand" href="/" rel="home">
+            <img class="header__avatar" src="data:image/jpeg;base64,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" width="48" height="48" alt="" />
+            <span class="header__name">
+                <span>Max Böck</span>
+                <span class="header__verification" aria-hidden="true">
+                    <svg class="icon icon--verified" version="1.1" viewBox="0,0,24,24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.71-3.998-3.818-3.998-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.437 2.25c-.415-.165-.866-.25-1.336-.25-2.11 0-3.818 1.79-3.818 4 0 .494.083.964.237 1.4-1.272.65-2.147 2.018-2.147 3.6 0 1.495.782 2.798 1.942 3.486-.02.17-.032.34-.032.514 0 2.21 1.708 4 3.818 4 .47 0 .92-.086 1.335-.25.62 1.334 1.926 2.25 3.437 2.25 1.512 0 2.818-.916 3.437-2.25.415.163.865.248 1.336.248 2.11 0 3.818-1.79 3.818-4 0-.174-.012-.344-.033-.513 1.158-.687 1.943-1.99 1.943-3.484zm-6.616-3.334l-4.334 6.5c-.145.217-.382.334-.625.334-.143 0-.288-.04-.416-.126l-.115-.094-2.415-2.415c-.293-.293-.293-.768 0-1.06s.768-.294 1.06 0l1.77 1.767 3.825-5.74c.23-.345.696-.436 1.04-.207.346.23.44.696.21 1.04z"/>
+                    </svg>
+                </span>
+            </span>
+        </a>
+
+        <div class="header__nav">
+            <nav class="nav js-nav" role="navigation" tabindex="-1">
+
+    
+    <button
+        class="iconbtn nav__togglebtn js-nav-toggle"
+        aria-expanded="false"
+        aria-controls="nav-menu"
+        aria-label="toggle menu"
+    >
+        <span class="menuicon">
+            <span class="menuicon__bar"></span>
+            <span class="menuicon__bar"></span>
+            <span class="menuicon__bar"></span>
+            <span class="menuicon__bar"></span>
+        </span>
+    </button>
+
+    
+    <div class="nav__content">
+        <ul class="nav__menu js-nav-menu" id="nav-menu"><li class="nav__item">
+                    <a
+                        href="/"
+                        class="nav__link"
+                        
+                    >
+                        <span class="nav__num" aria-hidden="true">01</span>
+                        Home
+                    </a>
+                </li><li class="nav__item nav__item--active">
+                    <a
+                        href="/blog/"
+                        class="nav__link"
+                        
+                    >
+                        <span class="nav__num" aria-hidden="true">02</span>
+                        Writing
+                    </a>
+                </li><li class="nav__item">
+                    <a
+                        href="/notes/"
+                        class="nav__link"
+                        
+                    >
+                        <span class="nav__num" aria-hidden="true">03</span>
+                        Notes
+                    </a>
+                </li><li class="nav__item">
+                    <a
+                        href="/about/"
+                        class="nav__link"
+                        
+                    >
+                        <span class="nav__num" aria-hidden="true">04</span>
+                        About
+                    </a>
+                </li></ul>
+    </div>
+    
+    
+    <div class="nav__bg">
+        <div class="nav__bg__circle"></div>
+    </div>
+
+</nav>
+
+            <button
+                class="iconbtn header__themebtn js-themepicker-toggle"
+                aria-expanded="false"
+                aria-controls="theme-menu"
+            >
+                <span class="sr-only">toggle theme panel</span>
+                <svg class="icon icon--theme" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true">
+                    <path d="M18 4V3c0-.55-.45-1-1-1H5c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h12c.55 0 1-.45 1-1V6h1v4H9v11c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-9h8V4h-3z"/>
+                </svg>
+            </button>
+        </div>
+
+    </div>
+</header>
+
+            <main class="main container" role="main" id="main" tabindex="-1">
+                <article 
+    id="container-queries-in-web-components" 
+    class="post h-entry" 
+    role="article" 
+    itemscope 
+    itemtype="http://schema.org/BlogPosting" 
+    aria-labelledby="container-queries-in-web-components-title" 
+>
+    <header class="post__header">
+        <h1 id="container-queries-in-web-components-title" class="post__title p-name title" itemprop="headline">Container Queries in Web Components</h1>
+        <div class="post__meta">
+
+            <p class="u-mr2">
+                <time class="post__date dt-published" itemprop="datePublished" datetime="2021-05-15T00:00:00">15 May 2021</time>
+                
+                <span aria-label="in category">&sdot;</span> <span class="post__tags p-category">code</span>
+                
+                
+            </p>
+
+            
+            <a href="https://codepen.io/mxbck/live/XWMrMOp" class="btn btn--primary post__demo" target="_blank" rel="noopener noreferrer">
+                View Demo
+            </a>
+            
+
+        </div>
+    </header>
+
+    <div class="post__content e-content markdown" itemprop="articleBody">
+        <p class="lead">Container Queries are one of the most anticipated new features in CSS. I recently got a chance to play with them a bit and take the new syntax for a spin.</p>
+<p>I came up with this demo of a book store. Each of the books is draggable and can be moved to one of three sections, with varying available space. Depending on where it is placed, different styles will be applied to the book. The <a href="https://codepen.io/mxbck/pen/XWMrMOp">full source code</a> is up on Codepen. Here’s how it looks:</p>
+<div class="extend">
+    <video width="960" style="margin:0 auto; border: 1px solid var(--color-border);" preload controls>
+        <source src="https://res.cloudinary.com/mxb/video/upload/q_auto/v1621003114/bookstore_nnn2vr.webm" type="video/webm" />
+        <source src="https://res.cloudinary.com/mxb/video/upload/q_auto/v1621003115/bookstore_kkpxmt.mp4" type="video/mp4" />
+    </video>
+</div>
+<div class="callout callout--warning"><span class="callout__icon"><svg class="icon icon--warning" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-warning"></use></svg></span><div class="callout__content"><p>This demo currently only works in <a href="https://www.google.com/chrome/canary/">Chrome Canary</a>. Download the latest version, then enable Container Queries under <em>chrome://flags</em> to see them in action.</p></div></div>
+<h2 id="h-here%E2%80%99s-what%E2%80%99s-going-on"><a class="heading-anchor" href="#h-here%E2%80%99s-what%E2%80%99s-going-on" aria-hidden="true">#</a> Here’s what’s going on</h2>
+<p>Each of these books is a custom element, or “web component”. They each contain a cover image, a title and an author. In markup they look like this:</p>
+<pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>book-element</span> <span class="token attr-name">color</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#ba423d<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">slot</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>cover<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/books/1984.avif<span class="token punctuation">"</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>cover by shepard fairey<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span><br>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">slot</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>title<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>1984<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><br>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">slot</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>author<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>George Orwell<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>book-element</span><span class="token punctuation">></span></span></code></pre>
+<p>This then gets applied to a template which defines the internal Shadow DOM of the component. The <code>&lt;slot&gt;</code> elements in there will get replaced by the actual content we’re passing in.</p>
+<pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>book-template<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>style</span><span class="token punctuation">></span></span><span class="token style"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>style</span><span class="token punctuation">></span></span><br>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>article</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>book<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br>        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>front<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br>            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>slot</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>cover<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>slot</span><span class="token punctuation">></span></span><br>        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><br>        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>meta<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br>            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>title<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>slot</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>title<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>slot</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">></span></span><br>            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>author<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>slot</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>author<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>slot</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span><br>        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><br>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>article</span><span class="token punctuation">></span></span><br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
+<p>Alright, nothing too fancy yet, just some basic structure.</p>
+<p>The magic happens when we apply some internal styling to this. Everything inside that <code>&lt;style&gt;</code> tag will be scoped to the component - and since styles can not leak out of the shadow DOM and we can’t (easily) style its contents from the outside, we have real component encapsulation.</p>
+<p>Container Queries are one of the last few missing puzzle pieces in component-driven design. They enable us to give components <strong>intrinsic</strong> styles, meaning they can adapt themselves to whatever surroundings they are placed in.</p>
+<p>The new key property there is <code>container-type</code> - it lets us define an element as a container to compare container queries against. A value of <code>inline-size</code> indicates that this container will response to “dimensional queries on the inline axis”, meaning we will apply different styles based on its width.</p>
+<p>We can also give our container a name using the <code>container-name</code> property. It is optional in this example, but you can think of it in the same way that <code>grid-area</code> lets you define arbitrary names to use as references in your code later.</p>
+<pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>book-template<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>style</span><span class="token punctuation">></span></span><span class="token style"><span class="token language-css"><br>    <span class="token comment">/* Use Web Component Root as the Layout Container */</span><br>    <span class="token selector">:host</span> <span class="token punctuation">{</span><br>        <span class="token property">display</span><span class="token punctuation">:</span> block<span class="token punctuation">;</span><br>        <span class="token property">container-type</span><span class="token punctuation">:</span> inline-size<span class="token punctuation">;</span><br>        <span class="token property">container-name</span><span class="token punctuation">:</span> book<span class="token punctuation">;</span><br>    <span class="token punctuation">}</span><br>    </span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>style</span><span class="token punctuation">></span></span><br>    ...<br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
+<p>In the bookstore demo, I created three variants that depend on the width of the component’s <code>:host</code> (which translates to the <code>&lt;book-element&gt;</code> itself). I’ve omitted some of the styling for brevity here, but this part is where we define the multi-column or 3D book styles.</p>
+<pre class="language-css"><code class="language-css"><span class="token comment">/* Small Variant: Simple Cover + Title */</span><br><span class="token atrule"><span class="token rule">@container</span> <span class="token punctuation">(</span><span class="token property">max-width</span><span class="token punctuation">:</span> 199px<span class="token punctuation">)</span></span> <span class="token punctuation">{</span><br>    <span class="token selector">.book</span> <span class="token punctuation">{</span><br>        <span class="token property">padding</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span><br>    <span class="token punctuation">}</span><br><span class="token punctuation">}</span><br><span class="token comment">/* Medium Variant: Multi-Column, with Author */</span><br><span class="token atrule"><span class="token rule">@container</span> <span class="token punctuation">(</span><span class="token property">min-width</span><span class="token punctuation">:</span> 200px<span class="token punctuation">)</span> <span class="token keyword">and</span> <span class="token punctuation">(</span><span class="token property">max-width</span><span class="token punctuation">:</span> 399px<span class="token punctuation">)</span></span> <span class="token punctuation">{</span><br>    <span class="token selector">.book</span> <span class="token punctuation">{</span><br>        <span class="token property">display</span><span class="token punctuation">:</span> grid<span class="token punctuation">;</span><br>        <span class="token property">grid-template-columns</span><span class="token punctuation">:</span> 1fr 1fr<span class="token punctuation">;</span><br>        <span class="token property">gap</span><span class="token punctuation">:</span> 1rem<span class="token punctuation">;</span><br>    <span class="token punctuation">}</span><br><span class="token punctuation">}</span><br><span class="token comment">/* Large Variant: 3D Perspective */</span><br><span class="token atrule"><span class="token rule">@container</span> <span class="token punctuation">(</span><span class="token property">min-width</span><span class="token punctuation">:</span> 400px<span class="token punctuation">)</span></span> <span class="token punctuation">{</span><br>    <span class="token selector">.book</span> <span class="token punctuation">{</span><br>        <span class="token property">position</span><span class="token punctuation">:</span> relative<span class="token punctuation">;</span><br>        <span class="token property">transform-style</span><span class="token punctuation">:</span> preserve-3d<span class="token punctuation">;</span><br>        <span class="token property">transform</span><span class="token punctuation">:</span> <span class="token function">rotateY</span><span class="token punctuation">(</span>-25deg<span class="token punctuation">)</span><span class="token punctuation">;</span><br>    <span class="token punctuation">}</span><br><span class="token punctuation">}</span></code></pre>
+<p>By adding <a href="https://github.com/bevacqua/dragula">Dragula.js</a> to enable drag-and-drop functionality, we can then move the individual components around. As soon as they’re moved to a different section in the DOM, its internal styles are re-calculated to match the new environment, and the corresponding CSS block is applied. Magic!</p>
+<h2 id="h-the-bento-box-idea"><a class="heading-anchor" href="#h-the-bento-box-idea" aria-hidden="true">#</a> The Bento Box Idea</h2>
+<p>Now theoretically, we could have achieved a similar effect by using the cascade itself. We could for example apply the 3D styles to all <code>.book</code>s inside <code>.stage</code>. But that would have some problems:</p>
+<ul>
+<li>it wouldn’t be responsive - if <code>.stage</code> ever gets too narrow, it would break</li>
+<li>it would create an unwanted dependency context between parent and child</li>
+<li>it would break component encapsulation and mix layout with content styles</li>
+</ul>
+<p>It’s generally a <a href="https://mxb.dev/blog/the-css-mindset/">good idea</a> in CSS to separate “layout” from “content” components and let each handle their own specific areas of responsibility. I like to think of Japanese bento boxes as a metaphor for this: a container divided into specific sections that can be filled with anything.</p>
+<p>For example, the layout for our bookstore looks like this:</p>
+<figure class="extend">
+    <img src="https://res.cloudinary.com/mxb/image/upload/v1621005967/grid_sa0gt0.png" style="border: 1px solid var(--color-border);" alt="layout schema for the bookstore with three main content sections">
+</figure>
+<p>It’s a grid divided into three sections, the middle one containing a nested flexible grid itself.</p>
+<pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>layout<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>stage<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><br>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>main</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>content<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br>        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>itemlist<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span><br>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>main</span><span class="token punctuation">></span></span><br>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>cart<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span></code></pre>
+<pre class="language-css"><code class="language-css"><span class="token comment">/* main layout sections */</span><br><span class="token selector">.stage,<br>.content,<br>.cart</span> <span class="token punctuation">{</span><br>    <span class="token property">padding</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--spacing<span class="token punctuation">)</span><span class="token punctuation">;</span><br><span class="token punctuation">}</span><br><br><span class="token comment">/* nested sub-grid */</span><br><span class="token selector">.itemlist</span> <span class="token punctuation">{</span><br>    <span class="token property">display</span><span class="token punctuation">:</span> grid<span class="token punctuation">;</span><br>    <span class="token property">grid-template-columns</span><span class="token punctuation">:</span> <span class="token function">repeat</span><span class="token punctuation">(</span>auto-fill<span class="token punctuation">,</span> <span class="token function">minmax</span><span class="token punctuation">(</span>200px<span class="token punctuation">,</span> 1fr<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>    <span class="token property">gap</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--spacing<span class="token punctuation">)</span><span class="token punctuation">;</span><br><span class="token punctuation">}</span><br><br><span class="token comment">/* desktop layout */</span><br><span class="token atrule"><span class="token rule">@media</span> <span class="token punctuation">(</span><span class="token property">min-width</span><span class="token punctuation">:</span> 1024px<span class="token punctuation">)</span></span> <span class="token punctuation">{</span><br>    <span class="token selector">.layout</span> <span class="token punctuation">{</span><br>        <span class="token property">display</span><span class="token punctuation">:</span>grid<span class="token punctuation">;</span><br>        <span class="token property">height</span><span class="token punctuation">:</span> 100vh<span class="token punctuation">;</span><br>        <span class="token property">grid-template-columns</span><span class="token punctuation">:</span> 480px 1fr 130px<span class="token punctuation">;</span><br>    <span class="token punctuation">}</span><br><span class="token punctuation">}</span></code></pre>
+<p>The parts of the layout are only concerned with the alignment and dimensions of boxes. They have no effect whatsoever on their children other than giving them a certain amount of space to fill. Just like a bento box, it doesn’t care what we put into it, so we could easily re-use the layout for a completely different product. It is <strong>content-agnostic</strong>.</p>
+<p>That’s why Container Queries pair so well with Web Components. They both offer ways to encapsulate logic to build smart, independent building blocks. Once they’re defined, they can be used anywhere.</p>
+<p>Container Queries bring us one step closer to <a href="https://aneventapart.com/news/post/designing-intrinsic-layouts-aea-video">“Intrinsic Layouts”</a> and a future of truly independent, component-driven design. Exciting stuff ahead!</p>
+<h2 id="h-further-reading"><a class="heading-anchor" href="#h-further-reading" aria-hidden="true">#</a> Further Reading</h2>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Container_Queries">CSS Container Queries</a> - MDN</li>
+<li><a href="https://www.miriamsuzanne.com/2021/05/02/container-queries/">Container Queries Explainer &amp; Proposal</a> - Miriam Suzanne</li>
+<li><a href="https://www.sarasoueidan.com/blog/component-level-art-direction-with-container-queries-and-picture/">Component-level art direction with CSS Container Queries</a> - Sara Soueidan</li>
+<li><a href="https://github.com/w3c/csswg-drafts/issues/5889">Discussion about Container Queries in srcset and sizes</a> - CSSWG on Github</li>
+</ul>
+
+    </div>
+
+    <div class="post__footer">
+        <div hidden>
+            <a class="u-url" href="https://mxb.dev/blog/container-queries-web-components/">Container Queries in Web Components</a>
+            <p class="h-card p-author">
+                <a class="p-name u-url" rel="author" href="https://mxb.dev">Max Böck</a>
+                <img class="u-photo" src="https://mxb.dev/assets/images/avatar2.jpg" />
+            </p>
+        </div>
+
+        
+            <p class="post__footer__info">
+                Published in [code] &sdot; 15 May 2021 <br/>
+                <a href="https://github.com/maxboeck/mxb/tree/master/./src/posts/container-queries-web-components/2021-05-15-index.md" title="suggest a change to this post by submitting a PR">Edit this Post</a>
+            </p>
+
+            <a
+                href="https://front-end.social/@mxbck"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Follow Max Böck on Mastodon"
+                class="btn btn--mastodon"
+            >
+                <svg class="icon icon--mastodon" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-mastodon"></use></svg> Follow @mxbck
+            </a>
+        
+    </div>
+</article>
+
+
+<div class="postsection">
+    <div class="postsection__header">
+        <h3 class="postsection__title u-mb0">Webmentions</h3>
+        <a href="https://indieweb.org/Webmention" class="postsection__info" target="_blank" rel="noopener noreferrer">
+            <svg class="icon icon--question" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-question"></use></svg> What’s this?
+        </a>
+    </div><div
+    class="webmentions" 
+    id="webmentions"
+    data-url="https://mxb.dev/blog/container-queries-web-components/"
+    data-last-fetched=""
+>
+    <div data-render-root>
+        
+            <p class="webmentions__empty">No webmentions yet.</p>
+        
+    </div>
+</div>
+</div>
+
+<div class="postsection">
+    <h3 class="postsection__title">Other things I've written</h3>
+    
+
+<ol class="otherposts">
+    
+        <li class="otherposts__item">
+            <a href="/blog/seven-reasons-why-i-dont-write/" class="otherposts__link ">
+                <span class="otherposts__title">7 Reasons why I don&#39;t write</span>
+                <time class="otherposts__date" datetime="2023-01-30T00:00:00" aria-label=", written 30 Jan 2023">
+                    30 Jan 2023
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/the-indieweb-for-everyone/" class="otherposts__link ">
+                <span class="otherposts__title">The IndieWeb for Everyone</span>
+                <time class="otherposts__date" datetime="2022-11-12T00:00:00" aria-label=", written 12 Nov 2022">
+                    12 Nov 2022
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/make-free-stuff/" class="otherposts__link ">
+                <span class="otherposts__title">Make Free Stuff</span>
+                <time class="otherposts__date" datetime="2022-01-25T00:00:00" aria-label=", written 25 Jan 2022">
+                    25 Jan 2022
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/media-queries-in-times-of-container-queries/" class="otherposts__link ">
+                <span class="otherposts__title">Media Queries in Times of @container</span>
+                <time class="otherposts__date" datetime="2021-06-11T00:00:00" aria-label=", written 11 Jun 2021">
+                    11 Jun 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/eleventy-asset-pipeline/" class="otherposts__link ">
+                <span class="otherposts__title">Asset Pipelines in Eleventy</span>
+                <time class="otherposts__date" datetime="2021-04-26T00:00:00" aria-label=", written 26 Apr 2021">
+                    26 Apr 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/medium-share-highlight-eleventy/" class="otherposts__link ">
+                <span class="otherposts__title">Medium-Style Share Highlights in Eleventy</span>
+                <time class="otherposts__date" datetime="2021-04-13T00:00:00" aria-label=", written 13 Apr 2021">
+                    13 Apr 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/space-jam/" class="otherposts__link ">
+                <span class="otherposts__title">Space Jam</span>
+                <time class="otherposts__date" datetime="2021-04-04T00:00:00" aria-label=", written 04 Apr 2021">
+                    04 Apr 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/webmention-analytics/" class="otherposts__link ">
+                <span class="otherposts__title">Webmention Analytics</span>
+                <time class="otherposts__date" datetime="2021-02-07T00:00:00" aria-label=", written 07 Feb 2021">
+                    07 Feb 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/persistent-build-folders-netlify/" class="otherposts__link ">
+                <span class="otherposts__title">Making Persistent Build Folders in Netlify</span>
+                <time class="otherposts__date" datetime="2021-01-05T00:00:00" aria-label=", written 05 Jan 2021">
+                    05 Jan 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/year-in-review-2020/" class="otherposts__link ">
+                <span class="otherposts__title">A year in review: 2020</span>
+                <time class="otherposts__date" datetime="2020-12-19T00:00:00" aria-label=", written 19 Dec 2020">
+                    19 Dec 2020
+                </time>
+            </a>
+        </li>
+    
+</ol>
+</div>
+
+            </main>
+
+            <footer class="footer h-card" role="contentinfo">
+    <div class="footer__inner container">
+        <p class="footer__item">
+            <strong>&copy; 2012&ndash;2023</strong><br />
+            <a class="p-name u-url" rel="me" href="https://mxb.dev">Max Böck</a>
+        </p>
+
+        <p class="footer__item">
+            <strong>Subscribe</strong><br />
+            <a href="/mailinglist">Mailing List</a>
+        </p>
+
+        <p class="footer__item">
+            <strong>Social</strong><br />
+            <a href="https://front-end.social/@mxbck" title="Mastodon" rel="me" >Mastodon</a> / 
+            <a href="https://github.com/maxboeck" title="Github" rel="me">Github</a>
+        </p>
+
+        <p class="footer__item">
+            <strong>Legal</strong><br />
+            <a href="/privacy/">Privacy Policy</a>
+        </p>
+
+        <p class="footer__item">
+            <strong>Links</strong><br />
+            <a href="/blogroll/">Blogroll</a>
+        </p>
+
+        <p class="footer__item footer__item--right u-desktop-only">
+            <a href="https://speedlify.mxb.dev/mxb.dev/" class="footer__speedlify">
+                <speedlify-score speedlify-url="https://speedlify.mxb.dev" hash="7dda0135" score weight></speedlify-score>
+            </a>
+        </p>
+
+        <p class="footer__item footer__item--right">
+            <a href="https://github.com/maxboeck/mxb/tree/master/./src/posts/container-queries-web-components/2021-05-15-index.md" class="footer__icon" title="Edit this page on Github">
+                <span class="sr-only">Edit this page on Github</span>
+                <svg class="icon icon--github" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-github"></use></svg>
+            </a>
+            <a href="/feed.xml" class="footer__icon" title="RSS Feed">
+                <span class="sr-only">RSS Feed</span>
+                <svg class="icon icon--feed" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-feed"></use></svg>
+            </a>
+        </p>
+
+    </div>
+</footer>
+        </div>
+
+        
+        <script src="/assets/scripts/main.js" defer></script><script src="/assets/scripts/webmentions.js" defer></script>
+            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></body>
+</html>

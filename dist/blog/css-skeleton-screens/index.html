@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<!--!
+  Oh so you're an inspector?
+  View the source here: https://github.com/maxboeck/mxb
+-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Building Skeleton Screens with CSS | Max Böck</title>
+        <link rel="preload" href="/assets/fonts/noe-display-medium.woff2" as="font" type="font/woff2" crossorigin>
+        <link rel="preconnect" href="https://webmention.io">
+
+        <link rel="stylesheet" href="/assets/styles/themes.css">
+        <link rel="stylesheet" href="/assets/styles/main.css">
+
+        
+
+<meta name="description" content="Designing loading states on the web is often overlooked or dismissed as an afterthought. Building an experience that works with slow connections is not only a developer&#39;s challenge..."><meta name="image" content="https://mxb.dev/blog/css-skeleton-screens/cover.png"><meta property="og:title" content="Building Skeleton Screens with CSS">
+<meta property="og:description" content="Designing loading states on the web is often overlooked or dismissed as an afterthought. Building an experience that works with slow connections is not only a developer&#39;s challenge...">
+<meta property="og:url" content="https://mxb.dev/blog/css-skeleton-screens/">
+<meta property="og:image" content="https://mxb.dev/blog/css-skeleton-screens/cover.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<meta property="og:type" content="article">
+    <meta property="article:published_time" content="2017-08-30T00:00:00">
+<meta name="author" content="Max Böck">
+<meta property="og:site_name" content="Max Böck">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:site" content="@mxbck">
+<meta name="twitter:creator" content="@mxbck">
+<meta property="fb:app_id" content="127677017332959">
+
+<link rel="canonical" href="https://mxb.dev/blog/css-skeleton-screens/">
+
+
+<script type="application/ld+json">
+    {
+        "name":"Max Böck",
+        "description":"Max Böck is a professional front-end developer based in Vienna, Austria.",
+        "author": {
+            "@type":"Person",
+            "name":"Max Böck"
+        },
+        "@type":"WebSite",
+        "url":"https://mxb.dev",
+        "image":"https://mxb.dev/assets/images/avatar2.jpg",
+        "headline":"Max Böck",
+        "sameAs":[
+            "https://twitter.com/mxbck",
+            "https://github.com/maxboeck"
+        ],
+        "@context":"http://schema.org"
+    }
+</script>
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/images/favicon/apple-touch-icon.png?v=1">
+<link rel="icon" type="image/png" href="/assets/images/favicon/favicon-32x32.png?v=1" sizes="32x32">
+<link rel="icon" type="image/png" href="/assets/images/favicon/favicon-16x16.png?v=1" sizes="16x16">
+<link rel="mask-icon" href="/assets/images/favicon/safari-pinned-tab.svg?v=1" color="#1a1a1a">
+<link rel="shortcut icon" href="/assets/images/favicon/favicon.ico?v=1">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#1a1a1a">
+
+
+<link type="application/atom+xml" rel="alternate" href="https://mxb.dev/feed.xml" title="Max Böck">
+<link type="application/atom+xml" rel="alternate" href="https://mxb.dev/notes/feed.xml" title="Max Böck | Notes">
+
+
+<link rel="authorization_endpoint" href="https://indieauth.com/auth" />
+<link rel="token_endpoint" href="https://tokens.indieauth.com/token" />
+<meta name="monetization" content="$ilp.uphold.com/7qZLaNKjDa87">
+
+
+<link rel="pingback" href="https://webmention.io/mxb.dev/xmlrpc">
+<link rel="webmention" href="https://webmention.io/mxb.dev/webmention">
+        <script>(function() {
+    var theme = localStorage.getItem('theme');
+    window.metaColors = {'default':'#f7f7f9','dark':'#252526','beach':'#e3f6f5','choco':'#41312E','moomoo':'#f3e1d8','bowser':'#29293e','yoshi':'#f2ede9','rainbow':'#311b46','lobster':'#ffb9ad','hackernews':'#F8F8EC'};
+    if (theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', window.metaColors[theme]);
+    }
+})();</script>
+    </head>
+    <body>
+        <a href="#main" class="sr-skip-link">skip to main content</a>
+        <div class="titlebar">
+    <div class="titlebar__inner"></div>
+</div>
+
+        <div class="hfeed layout" role="document">
+            <div class="themepicker js-themepicker" data-nosnippet hidden>
+    <h3 class="themepicker__title">Select Theme</h3>
+    <ul class="themepicker__list" id="theme-menu">
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Classic'" 
+                data-theme="default" 
+            >
+                <span class="themepicker__name">Classic</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Dark'" 
+                data-theme="dark" 
+            >
+                <span class="themepicker__name">Dark</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Koopa Beach'" 
+                data-theme="beach" 
+            >
+                <span class="themepicker__name">Koopa Beach</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Choco Mountain'" 
+                data-theme="choco" 
+            >
+                <span class="themepicker__name">Choco Mountain</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Moo Moo Farm'" 
+                data-theme="moomoo" 
+            >
+                <span class="themepicker__name">Moo Moo Farm</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Bowser&#39;s Castle'" 
+                data-theme="bowser" 
+            >
+                <span class="themepicker__name">Bowser&#39;s Castle</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Yoshi Valley'" 
+                data-theme="yoshi" 
+            >
+                <span class="themepicker__name">Yoshi Valley</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Rainbow Road'" 
+                data-theme="rainbow" 
+            >
+                <span class="themepicker__name">Rainbow Road</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Lobster Life'" 
+                data-theme="lobster" 
+            >
+                <span class="themepicker__name">Lobster Life</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Hacker News'" 
+                data-theme="hackernews" 
+            >
+                <span class="themepicker__name">Hacker News</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+    </ul>
+    <button class="iconbtn themepicker__close js-themepicker-close">
+        <span class="sr-only">close themepicker</span>
+        <svg class="icon icon--close" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-close"></use></svg>
+    </button>
+</div>
+            <header class="header" role="banner">
+    <div class="header__inner container">
+
+        <a class="header__brand" href="/" rel="home">
+            <img class="header__avatar" src="data:image/jpeg;base64,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" width="48" height="48" alt="" />
+            <span class="header__name">
+                <span>Max Böck</span>
+                <span class="header__verification" aria-hidden="true">
+                    <svg class="icon icon--verified" version="1.1" viewBox="0,0,24,24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.71-3.998-3.818-3.998-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.437 2.25c-.415-.165-.866-.25-1.336-.25-2.11 0-3.818 1.79-3.818 4 0 .494.083.964.237 1.4-1.272.65-2.147 2.018-2.147 3.6 0 1.495.782 2.798 1.942 3.486-.02.17-.032.34-.032.514 0 2.21 1.708 4 3.818 4 .47 0 .92-.086 1.335-.25.62 1.334 1.926 2.25 3.437 2.25 1.512 0 2.818-.916 3.437-2.25.415.163.865.248 1.336.248 2.11 0 3.818-1.79 3.818-4 0-.174-.012-.344-.033-.513 1.158-.687 1.943-1.99 1.943-3.484zm-6.616-3.334l-4.334 6.5c-.145.217-.382.334-.625.334-.143 0-.288-.04-.416-.126l-.115-.094-2.415-2.415c-.293-.293-.293-.768 0-1.06s.768-.294 1.06 0l1.77 1.767 3.825-5.74c.23-.345.696-.436 1.04-.207.346.23.44.696.21 1.04z"/>
+                    </svg>
+                </span>
+            </span>
+        </a>
+
+        <div class="header__nav">
+            <nav class="nav js-nav" role="navigation" tabindex="-1">
+
+    
+    <button
+        class="iconbtn nav__togglebtn js-nav-toggle"
+        aria-expanded="false"
+        aria-controls="nav-menu"
+        aria-label="toggle menu"
+    >
+        <span class="menuicon">
+            <span class="menuicon__bar"></span>
+            <span class="menuicon__bar"></span>
+            <span class="menuicon__bar"></span>
+            <span class="menuicon__bar"></span>
+        </span>
+    </button>
+
+    
+    <div class="nav__content">
+        <ul class="nav__menu js-nav-menu" id="nav-menu"><li class="nav__item">
+                    <a
+                        href="/"
+                        class="nav__link"
+                        
+                    >
+                        <span class="nav__num" aria-hidden="true">01</span>
+                        Home
+                    </a>
+                </li><li class="nav__item nav__item--active">
+                    <a
+                        href="/blog/"
+                        class="nav__link"
+                        
+                    >
+                        <span class="nav__num" aria-hidden="true">02</span>
+                        Writing
+                    </a>
+                </li><li class="nav__item">
+                    <a
+                        href="/notes/"
+                        class="nav__link"
+                        
+                    >
+                        <span class="nav__num" aria-hidden="true">03</span>
+                        Notes
+                    </a>
+                </li><li class="nav__item">
+                    <a
+                        href="/about/"
+                        class="nav__link"
+                        
+                    >
+                        <span class="nav__num" aria-hidden="true">04</span>
+                        About
+                    </a>
+                </li></ul>
+    </div>
+    
+    
+    <div class="nav__bg">
+        <div class="nav__bg__circle"></div>
+    </div>
+
+</nav>
+
+            <button
+                class="iconbtn header__themebtn js-themepicker-toggle"
+                aria-expanded="false"
+                aria-controls="theme-menu"
+            >
+                <span class="sr-only">toggle theme panel</span>
+                <svg class="icon icon--theme" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true">
+                    <path d="M18 4V3c0-.55-.45-1-1-1H5c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h12c.55 0 1-.45 1-1V6h1v4H9v11c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-9h8V4h-3z"/>
+                </svg>
+            </button>
+        </div>
+
+    </div>
+</header>
+
+            <main class="main container" role="main" id="main" tabindex="-1">
+                <article 
+    id="building-skeleton-screens-with-css" 
+    class="post h-entry" 
+    role="article" 
+    itemscope 
+    itemtype="http://schema.org/BlogPosting" 
+    aria-labelledby="building-skeleton-screens-with-css-title" 
+>
+    <header class="post__header">
+        <h1 id="building-skeleton-screens-with-css-title" class="post__title p-name title" itemprop="headline">Building Skeleton Screens with CSS</h1>
+        <div class="post__meta">
+
+            <p >
+                <time class="post__date dt-published" itemprop="datePublished" datetime="2017-08-30T00:00:00">30 Aug 2017</time>
+                
+                <span aria-label="in category">&sdot;</span> <span class="post__tags p-category">code</span>
+                
+                
+            </p>
+
+            
+
+        </div>
+    </header>
+
+    <div class="post__content e-content markdown" itemprop="articleBody">
+        <p><em>This article was originally published on <a href="https://css-tricks.com/building-skeleton-screens-css-custom-properties/">CSS-Tricks.com</a>.</em></p>
+<p class="lead">Designing loading states on the web is often overlooked or dismissed as an afterthought. Performance is not only a developer's responsibility - building an experience that works with slow connections can be a design challenge as well.</p>
+<p>While developers need to pay attention to things like minification or caching, designers have to think about how the UI will look and behave while it is in a “loading” or “offline” state.</p>
+<h2 id="h-the-illusion-of-speed"><a class="heading-anchor" href="#h-the-illusion-of-speed" aria-hidden="true">#</a> The Illusion of Speed</h2>
+<p><a href="https://en.wikipedia.org/wiki/Perceived_performance">Perceived performance</a> is a measure of how fast something <strong>feels</strong> to the user. The idea is that users are more patient and will think of a system as faster, if they know what’s going on and can anticipate content before it’s actually there. It’s a lot about managing expectations, and keeping the user informed.</p>
+<p>For a web app, this concept might include displaying “mockups” of text, images or other content elements - called <strong>skeleton screens</strong> 💀. You can find these in the wild, used by companies like Facebook, Google, Slack and others:</p>
+<figure>
+  <img src="slack-skeleton.jpg" alt="Slack desktop app using skeleton screens while loading">
+  <figcaption>Holy moly to you too, Slack.</figcaption>
+</figure>
+<h2 id="h-an-example"><a class="heading-anchor" href="#h-an-example" aria-hidden="true">#</a> An Example</h2>
+<p>Say you are building a web app. It’s a travel-advice kind of thing where people can share their trips and recommend places, so your main piece of content might look something like this:</p>
+<p><img src="card.png" alt="card UI of a travel blog post"></p>
+<p>You can take that card and reduce it down to its basic visual shapes, the <em>skeleton</em> of the UI component.</p>
+<p><img src="card-skeleton.png" alt="skeleton version of the same card, outlined in gray rectangles"></p>
+<p>Whenever someone requests new content from the server, you can immediately start showing the skeleton, while data is being loaded in the background. Once the content is ready, simply swap the skeleton for the actual card. This can be done with plain vanilla Javascript, or using a library like React.</p>
+<p>Now you could use an image to display the skeleton, but that would introduce an additional request and data overhead. We’re already loading stuff here, so it’s not a great idea to wait for another image to load first. Plus it’s not responsive, and if we ever decided to adjust some of the content card’s styling, we would have to duplicate the changes to the skeleton image so they’d match again. 😒 Meh.</p>
+<p>A better solution is to create the whole thing with just CSS. No extra requests, minimal overhead, not even any additional markup. And we can build it in a way that makes changing the design later much easier.</p>
+<h2 id="h-drawing-skeletons-in-css"><a class="heading-anchor" href="#h-drawing-skeletons-in-css" aria-hidden="true">#</a> Drawing Skeletons in CSS</h2>
+<p>First, we need to draw the basic shapes that will make up the card skeleton. We can do this by adding different <a href="https://www.w3schools.com/cssref/func_linear-gradient.asp">gradients</a> to the <code>background-image</code> property. By default, linear gradients run from top to bottom, with different color stop transitions. If we just define one color stop and leave the rest transparent, we can draw shapes.</p>
+<p>Keep in mind that multiple background-images are stacked on top of each other here, so the order is important. The last gradient definition will be in the back, the first at the front.</p>
+<pre class="language-css"><code class="language-css"><span class="token selector">.skeleton</span> <span class="token punctuation">{</span><br>  <span class="token property">background-repeat</span><span class="token punctuation">:</span> no-repeat<span class="token punctuation">;</span><br>  <span class="token property">background-image</span><span class="token punctuation">:</span> <br>    <span class="token comment">/* layer 2: avatar */</span><br>    <span class="token comment">/* white circle with 16px radius */</span><br>    <span class="token function">radial-gradient</span><span class="token punctuation">(</span>circle 16px<span class="token punctuation">,</span> white 99%<span class="token punctuation">,</span> transparent 0<span class="token punctuation">)</span><span class="token punctuation">,</span><br>    <span class="token comment">/* layer 1: title */</span><br>    <span class="token comment">/* white rectangle with 40px height */</span><br>    <span class="token function">linear-gradient</span><span class="token punctuation">(</span>white 40px<span class="token punctuation">,</span> transparent 0<span class="token punctuation">)</span><span class="token punctuation">,</span><br>    <span class="token comment">/* layer 0: card bg */</span><br>    <span class="token comment">/* gray rectangle that covers whole element */</span><br>    <span class="token function">linear-gradient</span><span class="token punctuation">(</span>gray 100%<span class="token punctuation">,</span> transparent 0<span class="token punctuation">)</span><span class="token punctuation">;</span><br><span class="token punctuation">}</span></code></pre>
+<p>These shapes stretch to fill the entire space, just like regular block-level elements. If we want to change that, we’ll have to define explicit dimensions for them. The value pairs in <code>background-size</code> set the width and height of each layer, keeping the same order we used in <code>background-image</code>:</p>
+<pre class="language-css"><code class="language-css"><span class="token selector">.skeleton</span> <span class="token punctuation">{</span><br>  <span class="token property">background-size</span><span class="token punctuation">:</span><br>    32px 32px<span class="token punctuation">,</span>  <span class="token comment">/* avatar */</span><br>    200px 40px<span class="token punctuation">,</span> <span class="token comment">/* title */</span><br>    100% 100%<span class="token punctuation">;</span>  <span class="token comment">/* card bg */</span><br><span class="token punctuation">}</span></code></pre>
+<p>The last step is to position the elements on the card. This works just like <code>position:absolute</code>, with values  representing the <code>left</code> and <code>top</code> property. We can for example simulate a padding of 24px for the avatar and title, to match the look of the real content card.</p>
+<pre class="language-css"><code class="language-css"><span class="token selector">.skeleton</span> <span class="token punctuation">{</span><br>  <span class="token property">background-position</span><span class="token punctuation">:</span><br>    24px 24px<span class="token punctuation">,</span>  <span class="token comment">/* avatar */</span><br>    24px 200px<span class="token punctuation">,</span> <span class="token comment">/* title */</span><br>    0 0<span class="token punctuation">;</span>        <span class="token comment">/* card bg */</span><br><span class="token punctuation">}</span></code></pre>
+<h2 id="h-break-it-up-with-custom-properties"><a class="heading-anchor" href="#h-break-it-up-with-custom-properties" aria-hidden="true">#</a> Break it up with Custom Properties</h2>
+<p>This works well in a simple example - but if we want to build something just a little more complex, the CSS quickly gets messy and very hard to read. If another developer was handed that code, they would have no idea where all those magic numbers are coming from. Maintaining it would surely suck.</p>
+<p>Thankfully, we can now use <a href="https://www.smashingmagazine.com/2017/04/start-using-css-custom-properties/">custom CSS properties</a> to write the skeleton styles in a much more concise, developer-friendly way - and even take the relationship between different values into account:</p>
+<pre class="language-css"><code class="language-css"><span class="token selector">.skeleton</span> <span class="token punctuation">{</span><br>  <span class="token comment">/*<br>    define as separate properties<br>  */</span><br>  <span class="token property">--card-height</span><span class="token punctuation">:</span> 340px<span class="token punctuation">;</span><br>  <span class="token property">--card-padding</span><span class="token punctuation">:</span>24px<span class="token punctuation">;</span><br>  <span class="token property">--card-skeleton</span><span class="token punctuation">:</span> <span class="token function">linear-gradient</span><span class="token punctuation">(</span>gray <span class="token function">var</span><span class="token punctuation">(</span>--card-height<span class="token punctuation">)</span><span class="token punctuation">,</span> transparent 0<span class="token punctuation">)</span><span class="token punctuation">;</span><br>  <br>  <span class="token property">--title-height</span><span class="token punctuation">:</span> 32px<span class="token punctuation">;</span><br>  <span class="token property">--title-width</span><span class="token punctuation">:</span> 200px<span class="token punctuation">;</span><br>  <span class="token property">--title-position</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--card-padding<span class="token punctuation">)</span> 180px<span class="token punctuation">;</span><br>  <span class="token property">--title-skeleton</span><span class="token punctuation">:</span> <span class="token function">linear-gradient</span><span class="token punctuation">(</span>white <span class="token function">var</span><span class="token punctuation">(</span>--title-height<span class="token punctuation">)</span><span class="token punctuation">,</span> transparent 0<span class="token punctuation">)</span><span class="token punctuation">;</span><br><br>  <span class="token property">--avatar-size</span><span class="token punctuation">:</span> 32px<span class="token punctuation">;</span><br>  <span class="token property">--avatar-position</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--card-padding<span class="token punctuation">)</span> <span class="token function">var</span><span class="token punctuation">(</span>--card-padding<span class="token punctuation">)</span><span class="token punctuation">;</span><br>  <span class="token property">--avatar-skeleton</span><span class="token punctuation">:</span> <span class="token function">radial-gradient</span><span class="token punctuation">(</span><br>    circle <span class="token function">calc</span><span class="token punctuation">(</span><span class="token function">var</span><span class="token punctuation">(</span>--avatar-size<span class="token punctuation">)</span> / 2<span class="token punctuation">)</span><span class="token punctuation">,</span> <br>    white 99%<span class="token punctuation">,</span> <br>    transparent 0<br>  <span class="token punctuation">)</span><span class="token punctuation">;</span><br><br>  <span class="token comment">/* <br>    now we can break the background up <br>    into individual shapes <br>  */</span><br>  <span class="token property">background-image</span><span class="token punctuation">:</span> <br>    <span class="token function">var</span><span class="token punctuation">(</span>--avatar-skeleton<span class="token punctuation">)</span><span class="token punctuation">,</span><br>    <span class="token function">var</span><span class="token punctuation">(</span>--title-skeleton<span class="token punctuation">)</span><span class="token punctuation">,</span><br>    <span class="token function">var</span><span class="token punctuation">(</span>--card-skeleton<span class="token punctuation">)</span><span class="token punctuation">;</span><br><br>  <span class="token property">background-size</span><span class="token punctuation">:</span><br>    <span class="token function">var</span><span class="token punctuation">(</span>--avatar-size<span class="token punctuation">)</span><span class="token punctuation">,</span><br>    <span class="token function">var</span><span class="token punctuation">(</span>--title-width<span class="token punctuation">)</span> <span class="token function">var</span><span class="token punctuation">(</span>--title-height<span class="token punctuation">)</span><span class="token punctuation">,</span><br>    100% 100%<span class="token punctuation">;</span><br><br>  <span class="token property">background-position</span><span class="token punctuation">:</span><br>    <span class="token function">var</span><span class="token punctuation">(</span>--avatar-position<span class="token punctuation">)</span><span class="token punctuation">,</span><br>    <span class="token function">var</span><span class="token punctuation">(</span>--title-position<span class="token punctuation">)</span><span class="token punctuation">,</span><br>    0 0<span class="token punctuation">;</span><br><span class="token punctuation">}</span></code></pre>
+<p>Not only is this a lot more readable, it’s also way easier to change some of the values later on.<br>
+Plus we can use some of the variables (think <code>--avatar-size</code>, <code>--card-padding</code>, etc.) to define the styles for the actual card and always keep it in sync with the skeleton version.</p>
+<p>Adding a media query to adjust parts of the skeleton at different breakpoints is now also quite simple:</p>
+<pre class="language-css"><code class="language-css"><span class="token atrule"><span class="token rule">@media</span> screen <span class="token keyword">and</span> <span class="token punctuation">(</span><span class="token property">min-width</span><span class="token punctuation">:</span> 47em<span class="token punctuation">)</span></span><span class="token punctuation">{</span><br>  <span class="token selector">:root</span> <span class="token punctuation">{</span><br>    <span class="token property">--card-padding</span><span class="token punctuation">:</span> 32px<span class="token punctuation">;</span><br>    <span class="token property">--card-height</span><span class="token punctuation">:</span> 360px<span class="token punctuation">;</span><br>  <span class="token punctuation">}</span><br><span class="token punctuation">}</span></code></pre>
+<p>Caveat: <a href="http://caniuse.com/#feat=css-variables">Browser support</a> for custom properties is good, but not at 100%. Basically all modern browsers have support, with IE/Edge a bit late to the party. For this specific usecase, it would be easy to add a fallback using Sass variables though.</p>
+<h2 id="h-add-animation"><a class="heading-anchor" href="#h-add-animation" aria-hidden="true">#</a> Add Animation</h2>
+<p>To make this even better, we can animate our skeleton and make it look more like a loading indicator. All we need to do is put a new gradient on the top layer and then animate its position with <code>@keyframes</code>.</p>
+<p>Here’s a full example of how the finished skeleton card could look:</p>
+<div class="extend">
+  <p data-height="450" data-theme-id="dark" data-slug-hash="EvmLVp" data-default-tab="css,result" data-user="mxbck" data-embed-version="2" data-pen-title="Skeleton Loading Card" class="codepen">
+  <a href="https://codepen.io/mxbck/pen/EvmLVp/">Skeleton Loading Card</a> by Max Böck (<a href="https://codepen.io/mxbck">@mxbck</a>) on <a href="https://codepen.io">CodePen</a>.</p>
+  <script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+</div>
+<p>💡 Pro Tip: You can use the <code>:empty</code> selector and a pseudo element to draw the skeleton, so it only applies to empty card elements. Once the content is injected, the skeleton screen will automatically disappear.</p>
+<h2 id="h-more-on-designing-for-performance"><a class="heading-anchor" href="#h-more-on-designing-for-performance" aria-hidden="true">#</a> More on Designing for Performance</h2>
+<p>For a closer look at designing for perceived performance, check out these links:</p>
+<ul>
+<li>Designer VS. Developer #8: <a href="https://www.youtube.com/watch?v=551nfxay-M4">Designing for Great Performance</a></li>
+<li>Harry Roberts: <a href="https://csswizardry.com/2016/10/improving-perceived-performance-with-multiple-background-images/">Improving Perceived Performance with Multiple Background Images</a></li>
+<li>Sitepoint: <a href="https://www.sitepoint.com/a-designers-guide-to-fast-websites-and-perceived-performance/">A Designer’s Guide to Perceived Performance</a></li>
+<li>Manuel Wieser: <a href="https://manu.ninja/dominant-colors-for-lazy-loading-images">Dominant Color Lazy Loading</a></li>
+</ul>
+
+    </div>
+
+    <div class="post__footer">
+        <div hidden>
+            <a class="u-url" href="https://mxb.dev/blog/css-skeleton-screens/">Building Skeleton Screens with CSS</a>
+            <p class="h-card p-author">
+                <a class="p-name u-url" rel="author" href="https://mxb.dev">Max Böck</a>
+                <img class="u-photo" src="https://mxb.dev/assets/images/avatar2.jpg" />
+            </p>
+        </div>
+
+        
+            <p class="post__footer__info">
+                Published in [code] &sdot; 30 Aug 2017 <br/>
+                <a href="https://github.com/maxboeck/mxb/tree/master/./src/posts/css-skeleton-screens/2017-08-30-index.md" title="suggest a change to this post by submitting a PR">Edit this Post</a>
+            </p>
+
+            <a
+                href="https://front-end.social/@mxbck"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Follow Max Böck on Mastodon"
+                class="btn btn--mastodon"
+            >
+                <svg class="icon icon--mastodon" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-mastodon"></use></svg> Follow @mxbck
+            </a>
+        
+    </div>
+</article>
+
+
+<div class="postsection">
+    <div class="postsection__header">
+        <h3 class="postsection__title u-mb0">Webmentions</h3>
+        <a href="https://indieweb.org/Webmention" class="postsection__info" target="_blank" rel="noopener noreferrer">
+            <svg class="icon icon--question" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-question"></use></svg> What’s this?
+        </a>
+    </div><div
+    class="webmentions" 
+    id="webmentions"
+    data-url="https://mxb.dev/blog/css-skeleton-screens/"
+    data-last-fetched=""
+>
+    <div data-render-root>
+        
+            <p class="webmentions__empty">No webmentions yet.</p>
+        
+    </div>
+</div>
+</div>
+
+<div class="postsection">
+    <h3 class="postsection__title">Other things I've written</h3>
+    
+
+<ol class="otherposts">
+    
+        <li class="otherposts__item">
+            <a href="/blog/seven-reasons-why-i-dont-write/" class="otherposts__link ">
+                <span class="otherposts__title">7 Reasons why I don&#39;t write</span>
+                <time class="otherposts__date" datetime="2023-01-30T00:00:00" aria-label=", written 30 Jan 2023">
+                    30 Jan 2023
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/the-indieweb-for-everyone/" class="otherposts__link ">
+                <span class="otherposts__title">The IndieWeb for Everyone</span>
+                <time class="otherposts__date" datetime="2022-11-12T00:00:00" aria-label=", written 12 Nov 2022">
+                    12 Nov 2022
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/make-free-stuff/" class="otherposts__link ">
+                <span class="otherposts__title">Make Free Stuff</span>
+                <time class="otherposts__date" datetime="2022-01-25T00:00:00" aria-label=", written 25 Jan 2022">
+                    25 Jan 2022
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/media-queries-in-times-of-container-queries/" class="otherposts__link ">
+                <span class="otherposts__title">Media Queries in Times of @container</span>
+                <time class="otherposts__date" datetime="2021-06-11T00:00:00" aria-label=", written 11 Jun 2021">
+                    11 Jun 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/container-queries-web-components/" class="otherposts__link ">
+                <span class="otherposts__title">Container Queries in Web Components</span>
+                <time class="otherposts__date" datetime="2021-05-15T00:00:00" aria-label=", written 15 May 2021">
+                    15 May 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/eleventy-asset-pipeline/" class="otherposts__link ">
+                <span class="otherposts__title">Asset Pipelines in Eleventy</span>
+                <time class="otherposts__date" datetime="2021-04-26T00:00:00" aria-label=", written 26 Apr 2021">
+                    26 Apr 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/medium-share-highlight-eleventy/" class="otherposts__link ">
+                <span class="otherposts__title">Medium-Style Share Highlights in Eleventy</span>
+                <time class="otherposts__date" datetime="2021-04-13T00:00:00" aria-label=", written 13 Apr 2021">
+                    13 Apr 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/space-jam/" class="otherposts__link ">
+                <span class="otherposts__title">Space Jam</span>
+                <time class="otherposts__date" datetime="2021-04-04T00:00:00" aria-label=", written 04 Apr 2021">
+                    04 Apr 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/webmention-analytics/" class="otherposts__link ">
+                <span class="otherposts__title">Webmention Analytics</span>
+                <time class="otherposts__date" datetime="2021-02-07T00:00:00" aria-label=", written 07 Feb 2021">
+                    07 Feb 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/persistent-build-folders-netlify/" class="otherposts__link ">
+                <span class="otherposts__title">Making Persistent Build Folders in Netlify</span>
+                <time class="otherposts__date" datetime="2021-01-05T00:00:00" aria-label=", written 05 Jan 2021">
+                    05 Jan 2021
+                </time>
+            </a>
+        </li>
+    
+</ol>
+</div>
+
+            </main>
+
+            <footer class="footer h-card" role="contentinfo">
+    <div class="footer__inner container">
+        <p class="footer__item">
+            <strong>&copy; 2012&ndash;2023</strong><br />
+            <a class="p-name u-url" rel="me" href="https://mxb.dev">Max Böck</a>
+        </p>
+
+        <p class="footer__item">
+            <strong>Subscribe</strong><br />
+            <a href="/mailinglist">Mailing List</a>
+        </p>
+
+        <p class="footer__item">
+            <strong>Social</strong><br />
+            <a href="https://front-end.social/@mxbck" title="Mastodon" rel="me" >Mastodon</a> / 
+            <a href="https://github.com/maxboeck" title="Github" rel="me">Github</a>
+        </p>
+
+        <p class="footer__item">
+            <strong>Legal</strong><br />
+            <a href="/privacy/">Privacy Policy</a>
+        </p>
+
+        <p class="footer__item">
+            <strong>Links</strong><br />
+            <a href="/blogroll/">Blogroll</a>
+        </p>
+
+        <p class="footer__item footer__item--right u-desktop-only">
+            <a href="https://speedlify.mxb.dev/mxb.dev/" class="footer__speedlify">
+                <speedlify-score speedlify-url="https://speedlify.mxb.dev" hash="7dda0135" score weight></speedlify-score>
+            </a>
+        </p>
+
+        <p class="footer__item footer__item--right">
+            <a href="https://github.com/maxboeck/mxb/tree/master/./src/posts/css-skeleton-screens/2017-08-30-index.md" class="footer__icon" title="Edit this page on Github">
+                <span class="sr-only">Edit this page on Github</span>
+                <svg class="icon icon--github" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-github"></use></svg>
+            </a>
+            <a href="/feed.xml" class="footer__icon" title="RSS Feed">
+                <span class="sr-only">RSS Feed</span>
+                <svg class="icon icon--feed" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-feed"></use></svg>
+            </a>
+        </p>
+
+    </div>
+</footer>
+        </div>
+
+        
+        <script src="/assets/scripts/main.js" defer></script><script src="/assets/scripts/webmentions.js" defer></script>
+            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></body>
+</html>

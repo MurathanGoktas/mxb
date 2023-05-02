@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<!--!
+  Oh so you're an inspector?
+  View the source here: https://github.com/maxboeck/mxb
+-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Using Webmentions in Eleventy | Max Böck</title>
+        <link rel="preload" href="/assets/fonts/noe-display-medium.woff2" as="font" type="font/woff2" crossorigin>
+        <link rel="preconnect" href="https://webmention.io">
+
+        <link rel="stylesheet" href="/assets/styles/themes.css">
+        <link rel="stylesheet" href="/assets/styles/main.css">
+
+        
+
+<meta name="description" content="How to pull interactions from social media platforms like Twitter back to your own site, using Webmentions, webmention.io and Bridgy."><meta name="image" content="https://mxb.dev/blog/using-webmentions-on-static-sites/cover.jpg"><meta property="og:title" content="Using Webmentions in Eleventy">
+<meta property="og:description" content="How to pull interactions from social media platforms like Twitter back to your own site, using Webmentions, webmention.io and Bridgy.">
+<meta property="og:url" content="https://mxb.dev/blog/using-webmentions-on-static-sites/">
+<meta property="og:image" content="https://mxb.dev/blog/using-webmentions-on-static-sites/cover.jpg">
+<meta name="twitter:card" content="summary_large_image">
+
+<meta property="og:type" content="article">
+    <meta property="article:published_time" content="2019-01-10T00:00:00">
+<meta name="author" content="Max Böck">
+<meta property="og:site_name" content="Max Böck">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:site" content="@mxbck">
+<meta name="twitter:creator" content="@mxbck">
+<meta property="fb:app_id" content="127677017332959">
+
+<link rel="canonical" href="https://mxb.dev/blog/using-webmentions-on-static-sites/">
+
+
+<script type="application/ld+json">
+    {
+        "name":"Max Böck",
+        "description":"Max Böck is a professional front-end developer based in Vienna, Austria.",
+        "author": {
+            "@type":"Person",
+            "name":"Max Böck"
+        },
+        "@type":"WebSite",
+        "url":"https://mxb.dev",
+        "image":"https://mxb.dev/assets/images/avatar2.jpg",
+        "headline":"Max Böck",
+        "sameAs":[
+            "https://twitter.com/mxbck",
+            "https://github.com/maxboeck"
+        ],
+        "@context":"http://schema.org"
+    }
+</script>
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/images/favicon/apple-touch-icon.png?v=1">
+<link rel="icon" type="image/png" href="/assets/images/favicon/favicon-32x32.png?v=1" sizes="32x32">
+<link rel="icon" type="image/png" href="/assets/images/favicon/favicon-16x16.png?v=1" sizes="16x16">
+<link rel="mask-icon" href="/assets/images/favicon/safari-pinned-tab.svg?v=1" color="#1a1a1a">
+<link rel="shortcut icon" href="/assets/images/favicon/favicon.ico?v=1">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#1a1a1a">
+
+
+<link type="application/atom+xml" rel="alternate" href="https://mxb.dev/feed.xml" title="Max Böck">
+<link type="application/atom+xml" rel="alternate" href="https://mxb.dev/notes/feed.xml" title="Max Böck | Notes">
+
+
+<link rel="authorization_endpoint" href="https://indieauth.com/auth" />
+<link rel="token_endpoint" href="https://tokens.indieauth.com/token" />
+<meta name="monetization" content="$ilp.uphold.com/7qZLaNKjDa87">
+
+
+<link rel="pingback" href="https://webmention.io/mxb.dev/xmlrpc">
+<link rel="webmention" href="https://webmention.io/mxb.dev/webmention">
+        <script>(function() {
+    var theme = localStorage.getItem('theme');
+    window.metaColors = {'default':'#f7f7f9','dark':'#252526','beach':'#e3f6f5','choco':'#41312E','moomoo':'#f3e1d8','bowser':'#29293e','yoshi':'#f2ede9','rainbow':'#311b46','lobster':'#ffb9ad','hackernews':'#F8F8EC'};
+    if (theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', window.metaColors[theme]);
+    }
+})();</script>
+    </head>
+    <body>
+        <a href="#main" class="sr-skip-link">skip to main content</a>
+        <div class="titlebar">
+    <div class="titlebar__inner"></div>
+</div>
+
+        <div class="hfeed layout" role="document">
+            <div class="themepicker js-themepicker" data-nosnippet hidden>
+    <h3 class="themepicker__title">Select Theme</h3>
+    <ul class="themepicker__list" id="theme-menu">
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Classic'" 
+                data-theme="default" 
+            >
+                <span class="themepicker__name">Classic</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Dark'" 
+                data-theme="dark" 
+            >
+                <span class="themepicker__name">Dark</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Koopa Beach'" 
+                data-theme="beach" 
+            >
+                <span class="themepicker__name">Koopa Beach</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Choco Mountain'" 
+                data-theme="choco" 
+            >
+                <span class="themepicker__name">Choco Mountain</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Moo Moo Farm'" 
+                data-theme="moomoo" 
+            >
+                <span class="themepicker__name">Moo Moo Farm</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Bowser&#39;s Castle'" 
+                data-theme="bowser" 
+            >
+                <span class="themepicker__name">Bowser&#39;s Castle</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Yoshi Valley'" 
+                data-theme="yoshi" 
+            >
+                <span class="themepicker__name">Yoshi Valley</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Rainbow Road'" 
+                data-theme="rainbow" 
+            >
+                <span class="themepicker__name">Rainbow Road</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Lobster Life'" 
+                data-theme="lobster" 
+            >
+                <span class="themepicker__name">Lobster Life</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+        <li class="themepicker__item">
+            <button 
+                class="themepicker__btn js-themepicker-themeselect" 
+                aria-label="select color theme 'Hacker News'" 
+                data-theme="hackernews" 
+            >
+                <span class="themepicker__name">Hacker News</span>
+                <span class="themepicker__palette">
+                    <span class="themepicker__hue themepicker__hue--primary"></span>
+                    <span class="themepicker__hue themepicker__hue--secondary"></span>
+                    <span class="themepicker__hue themepicker__hue--border"></span>
+                    <span class="themepicker__hue themepicker__hue--textoffset"></span>
+                    <span class="themepicker__hue themepicker__hue--text"></span>
+                </span>
+            </button>
+        </li>
+    
+    </ul>
+    <button class="iconbtn themepicker__close js-themepicker-close">
+        <span class="sr-only">close themepicker</span>
+        <svg class="icon icon--close" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-close"></use></svg>
+    </button>
+</div>
+            <header class="header" role="banner">
+    <div class="header__inner container">
+
+        <a class="header__brand" href="/" rel="home">
+            <img class="header__avatar" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAgICAgJCAkKCgkNDgwODRMREBARExwUFhQWFBwrGx8bGx8bKyYuJSMlLiZENS8vNUROQj5CTl9VVV93cXecnNEBCAgICAkICQoKCQ0ODA4NExEQEBETHBQWFBYUHCsbHxsbHxsrJi4lIyUuJkQ1Ly81RE5CPkJOX1VVX3dxd5yc0f/CABEIAJYAlgMBIgACEQEDEQH/xAAcAAABBQEBAQAAAAAAAAAAAAAAAQQFBgcDAgj/2gAIAQEAAAAA2dVAUABRQOaqB4j+T5x7AVQ5qp5zDGotHehbbIigp4VTDcjlLvZpZr60VyooeVVh8g8NX0911bRziyPBQRSv/J3G6a3cfbWMrN8mfQogtc+UGFj3+w9o+KoGiW5yKvlSG+T4XU9d85hZOVfuWgyIq+VWjVZl3tvqIlyr+tIlVURSHZsa/Iyy8HdQ56NJCiKcYauwzuwc/ELWJfSpUURRWlBZQ944FTbvtGmfSiKKRcJUGdxeZ2ysGjSqqAopCViq0rvDzl30x+egUUWKqfqH41xjWdU0SXVVFUoFPuzjkR2X1XxJz9+0R8q1LJ6BI6pcetDoECHVx1k/prO8orfB756dmicenXx57r60/MWnLzKM+p4F8dU5dPXP/8QAGQEBAAMBAQAAAAAAAAAAAAAAAAEDBAUC/9oACAECEAAAAPYAPGeu3UCjE8dOwKMUeNusRzc5q6KYV8iPWnozEw5mX3t3IHMzOnpTEKqL7kR6RIiX/8QAGQEBAAMBAQAAAAAAAAAAAAAAAAECBQME/9oACAEDEAAAAKAAv6evDyg7adpx+Yd9O1svyidn0Izs9MT02rXyvATMavsrmeIlGr7Iy/IrZbt348BEgH//xAA+EAACAQMDAQUFBQUGBwAAAAABAgMABBEFEiExBhMiQVEUMDJhcQdigZGhIDNSkrEQFSNCcsFAQ1Njg9Hh/9oACAEBAAE/AP8AiXkRBl2AHzNS61o8AzLqNsn+qRRSdodDk+HVLU/+Raiv7GYkRXcLn0VwaEiHow967pGpd2AUdSa7S/aHBZia201e8nGQZT8CGr/WNS1KUvd300xPBDt4f5RgUVaPJWMbfVByPyoPcA8ZIqO6vYXDqGVuhK+E4P0rQ+3lzbvFFfK7pwO83nI+orT9Rtb2JXglDj3nb/tqXnfS7CUiOM4mderP/CKaR5DwMVY6NPdlF8fiPHFWPYptoZpTVl2VtYf3oD0dAsCuO4XAGKm7NaU6FHgFaRHJolxHb5L2sjYjb+Buu01HMGANA/tY/t1PPsVxhiv+G2WHlVzHskO7JOcs3qaSdt+EH6V2VaENGZBz55pQMDGMUkJIzihEMdKliqVcHmrLUCWMbHlTioJdw9z2muGh0e/KnBED/wBKu3kZjk5FRTtAMgeImtDuZMb2fwIdzHyH/s1ol288I3VbnwgGpcY4pquU4NPMbfWIVJws8J/mjOP6GrOTgGgcj3HaOFpdOvEQBnMD7QelXW1MsqZOPiNQOA+4jc2c5IrTjdX08FrCpwX8vWtJsFs7WOPOWxyagqaWCMEvIo+po3dvJ8Einy4Oa1bUIbO2knkbAUVFrE+qypI9i8QhYssh8wwxitGvO9iAJ5FQPlf2Mfsa1PbQWjm5cLEwKsScVqq2ouJRASUDnbj08qCbRznFfZ7aDfNcuBuxhaTirm57qMgzFM9MV2iuFjkhjlM83fHMaB2w2PmtaJYMiRYiaJD5Gu1sEss1haiYQwyFi8hGfhrS7W8gimMsqGMkDao+8cHNaHJtlIq1b3Graams6w63YV7a1jVY0Ybhvfkvg8ZxUvY3T59TnDReD/J4sAYH3aTsfokjzBVR5Y1K5UEIG/3IrQdP/u2WWDPwkig3ix5U9lDJ43TcfLNX+ny3kiZwAmdvAJGfSra0NvHEpYnA861XTUvLUhhkqdynzU+RqSBEtHwoBAH6GtLD+0KVqz5x7ieLurqWTH7xFz9R4auY9s25VOFwPyFQQxwwjahLRZC453gnz9DWrFLW+huAvD5Vh9Kt3V1R1OVIBFR9KcKOa9oDgD72BSeJcMcZrUykZmVCOeo+ea0fHfgGrID3E8QljZTwfI1P3xkRSo5fOfIgj/5Wr63b6ON86S7GbapQZNXs/t9kLxPhLhk+jCtKYNBx0zStUuSjc0ohEQj2hqu0aIkRRnefPLE0jOLi8idiSojzznBOTitMJFylWbcj3MsAZ0bzBNdr9M9vMIzjux+rHFadai309rTO5Ysp+BqDVRaXRiY4zJyDUciOAynII4NXkck0LRROULcFh1FC1aCMbLiUKo6ZBP5kVf30XeMpnuWz5M5A/MUUhQJ3aBSy5fAxyOBWnOBcLVpyFxS9PcYq/slmXIXnOaubMQIDjhuCc5q/0uCdpWmTGTlT6GtL1I2Efs10cqrYVqhuIHKgODkZp4O8UgNgGu0lvBDKjBgQoxketQ3cM3dBOoi8X1zWjxCSbJ8qsU8ND3JFatCq228DGHFP4121qehTTK/cOM+QanOs6VLl4pAVGNw5FL2z1FFEZDHFXOoajqUpAjcZPI6DJ8606IWMDvPKO8Px84C/KuzVzFMzFHVh6g5qzxj3esMosyuRlmGB9KUUYz5VeQmaVYgMg9al7NabLEWeAA46in7OujkQtgVqGnT2tncTysMbNoUjO4ngCtJvLrSpO9t5grY2nIyDWi/aNZDEeo20kb+ckXjSrLXtGvxm11GB/u78N+RocjI9x2p7dW+j3A0+zjW4vv8APk4jgH360ztLd3+rZv5Q/exGNMDaqlTkACguMVtGKEK7unJq8wkQQdTSoFYknAAOSeBXabWl1CZbe3YezwMSH/jfpn6CmJKbvQVbt4hx1pZlAzJGpGeM85rT+0F9ZsO4uni+4G4H4Vp3b8h0ivoRID/zIuD+VWOoWWoQ99aTrKnnjqD6EeX9vABJOAK1Ltv2esGkj9pM8qdVgG8A+hfoDXaP7RNTv0eO1zaWvTbG+JZSfIvUSyCN5XOXkbn555JqKZ42EiPhhyPusOa0TtJa30aRTSJHcgY2k4Df6ajUkDjrUsltaxmSeVIwBklyF/rWrds9Hicm2c3bjp3XwfzmtS1/UNUykjd3AesSZwR94+dSt4Tjn6+ZoL/gSt8sYq1O7afQZNSSYKEZ3McIP4QKUAZRTjHMjH+ld8uGVFIGfi86tdWkszmCaWElcErkZ/lpmVFLMwVQMkk4ArWvtEsrYvDpUPtko6yk7YF/HzrVdf1PVmJ1G/eVP+hGTHAPwHWriZm2RLgKo4VeAB8hTRB5kjzxGMn5s1Og8G7og4qFgoB6g9aIBkPPzwaF1qQUKt7dKPQTyD/epEeUh5naQg8NIxdgfq2ayAOTuOegrxEn9cUemMn55ojFu/NWir3Qx1am3e0Tv17lQv4mg+yJU6sfETS8c5JP61vAbkcAYrtx2imu5bjTowUt4Hw485HWpHYg7jkdaY+HI68moV3y5OOvSrVi0s7/APcY/lxS7TvGOcYzUDYOwrnBOKnQlRIG5FLIZFHJraflyaHClh1Jx0pUABI8hzXQ5q6OLMkZG45q16Q4J/dg/nUHMIJ5Mp71j8m6ClwfF0Hp8hTEggZ6YoHw7sdSa//EACQRAAEEAgEEAgMAAAAAAAAAAAEAAgMRICEEEjFCUTBBYXGB/9oACAECAQE/APkc5Ola0ozj0opw4gZlPFOKLRVoWDYUT+tuRIUjrcg76DbQdZUDqNZStc2Q7PtOOztA6Q2dKDuP3lJG17dp7el9I0Eemh2UPiRnyxUiAJXQT41+Vxx2z5ZJl/gVEoj6C40ZjZvuVatVhLC2Qb0faHErzUcEbDYFn2cK+P8A/8QAJhEAAQQABgEEAwAAAAAAAAAAAQACAxEEEiAhMVEiEDBBcWGBof/aAAgBAwEBPwD3GttMge4bCghhD2pcOWAnW1ROtoWY3SIDgQVIzI8jULtQtpgJRbvZcAntyhYgb6QoXtfC00OAOPlMAy8L54vpGwN1iuT9aopXxu8TzyFG/Oy+0Cmgm7KxB8na8Ebi/aNIPDb8r/ACxJ8nbEa8IKi+yUHAIO2WKlEsm3AFBZVl9a9IpnRHbcdI4u+Gf1SYiSQUTQ6Gkce1/9k=" width="48" height="48" alt="" />
+            <span class="header__name">
+                <span>Max Böck</span>
+                <span class="header__verification" aria-hidden="true">
+                    <svg class="icon icon--verified" version="1.1" viewBox="0,0,24,24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.71-3.998-3.818-3.998-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.437 2.25c-.415-.165-.866-.25-1.336-.25-2.11 0-3.818 1.79-3.818 4 0 .494.083.964.237 1.4-1.272.65-2.147 2.018-2.147 3.6 0 1.495.782 2.798 1.942 3.486-.02.17-.032.34-.032.514 0 2.21 1.708 4 3.818 4 .47 0 .92-.086 1.335-.25.62 1.334 1.926 2.25 3.437 2.25 1.512 0 2.818-.916 3.437-2.25.415.163.865.248 1.336.248 2.11 0 3.818-1.79 3.818-4 0-.174-.012-.344-.033-.513 1.158-.687 1.943-1.99 1.943-3.484zm-6.616-3.334l-4.334 6.5c-.145.217-.382.334-.625.334-.143 0-.288-.04-.416-.126l-.115-.094-2.415-2.415c-.293-.293-.293-.768 0-1.06s.768-.294 1.06 0l1.77 1.767 3.825-5.74c.23-.345.696-.436 1.04-.207.346.23.44.696.21 1.04z"/>
+                    </svg>
+                </span>
+            </span>
+        </a>
+
+        <div class="header__nav">
+            <nav class="nav js-nav" role="navigation" tabindex="-1">
+
+    
+    <button
+        class="iconbtn nav__togglebtn js-nav-toggle"
+        aria-expanded="false"
+        aria-controls="nav-menu"
+        aria-label="toggle menu"
+    >
+        <span class="menuicon">
+            <span class="menuicon__bar"></span>
+            <span class="menuicon__bar"></span>
+            <span class="menuicon__bar"></span>
+            <span class="menuicon__bar"></span>
+        </span>
+    </button>
+
+    
+    <div class="nav__content">
+        <ul class="nav__menu js-nav-menu" id="nav-menu"><li class="nav__item">
+                    <a
+                        href="/"
+                        class="nav__link"
+                        
+                    >
+                        <span class="nav__num" aria-hidden="true">01</span>
+                        Home
+                    </a>
+                </li><li class="nav__item nav__item--active">
+                    <a
+                        href="/blog/"
+                        class="nav__link"
+                        
+                    >
+                        <span class="nav__num" aria-hidden="true">02</span>
+                        Writing
+                    </a>
+                </li><li class="nav__item">
+                    <a
+                        href="/notes/"
+                        class="nav__link"
+                        
+                    >
+                        <span class="nav__num" aria-hidden="true">03</span>
+                        Notes
+                    </a>
+                </li><li class="nav__item">
+                    <a
+                        href="/about/"
+                        class="nav__link"
+                        
+                    >
+                        <span class="nav__num" aria-hidden="true">04</span>
+                        About
+                    </a>
+                </li></ul>
+    </div>
+    
+    
+    <div class="nav__bg">
+        <div class="nav__bg__circle"></div>
+    </div>
+
+</nav>
+
+            <button
+                class="iconbtn header__themebtn js-themepicker-toggle"
+                aria-expanded="false"
+                aria-controls="theme-menu"
+            >
+                <span class="sr-only">toggle theme panel</span>
+                <svg class="icon icon--theme" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true">
+                    <path d="M18 4V3c0-.55-.45-1-1-1H5c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h12c.55 0 1-.45 1-1V6h1v4H9v11c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-9h8V4h-3z"/>
+                </svg>
+            </button>
+        </div>
+
+    </div>
+</header>
+
+            <main class="main container" role="main" id="main" tabindex="-1">
+                <article 
+    id="using-webmentions-in-eleventy" 
+    class="post h-entry" 
+    role="article" 
+    itemscope 
+    itemtype="http://schema.org/BlogPosting" 
+    aria-labelledby="using-webmentions-in-eleventy-title" 
+>
+    <header class="post__header">
+        <h1 id="using-webmentions-in-eleventy-title" class="post__title p-name title" itemprop="headline">Using Webmentions in Eleventy</h1>
+        <div class="post__meta">
+
+            <p class="u-mr2">
+                <time class="post__date dt-published" itemprop="datePublished" datetime="2019-01-10T00:00:00">10 Jan 2019</time>
+                
+                <span aria-label="in category">&sdot;</span> <span class="post__tags p-category">code</span>
+                
+                
+            </p>
+
+            
+            <a href="https://github.com/maxboeck/eleventy-webmentions" class="btn btn--primary post__demo" target="_blank" rel="noopener noreferrer">
+                View Demo
+            </a>
+            
+
+        </div>
+    </header>
+
+    <div class="post__content e-content markdown" itemprop="articleBody">
+        <p class="lead">In last week's post, I talked about syndicating content from a static site to Twitter. But getting content out is only half the challenge.</p>
+<p>The real value of social media (apart from the massive ad revenue and dystopian data mining) is in the reactions we get from other people. The likes, reposts and replies - they’re what makes it “social”. To gain control over our own content, we need to capture these interactions as well and pull them back to our sites. In indieweb terms, that’s known as <a href="https://indieweb.org/backfeed">“backfeed”</a>.</p>
+<h2 id="h-hello-webmentions"><a class="heading-anchor" href="#h-hello-webmentions" aria-hidden="true">#</a> Hello Webmentions</h2>
+<div class="callout callout--info"><span class="callout__icon"><svg class="icon icon--info" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-info"></use></svg></span><div class="callout__content"><p>A <a href="https://indieweb.org/Webmention">Webmention</a> is an open standard for a reaction to something on the web. It's currently in W3C recommendation status. When you link to a website, you can send it a Webmention to notify it.</p><p>It's comparable to pingbacks, except that webmentions contain a lot more information than a simple &quot;ping&quot;. They can be used to express likes, reposts, comments or other things.</p></div></div>
+<p>To make a site support webmentions, it needs to declare an endpoint to accept them. That endpoint can be a script hosted on your own server, or in the case of static sites, a third-party service like <a href="https://webmention.io">webmention.io</a>.</p>
+<p>Webmention.io is a free service made by indieweb pioneer Aaron Parecki that does most of the groundwork of receiving, storing and organizing incoming webmentions for you. It’s awesome!</p>
+<p>To use it, sign up for a free account there using the <a href="https://indieauth.com/">IndieAuth</a> process, then include a link tag in the <code>head</code> of your site:</p>
+<pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>link</span> <span class="token attr-name">rel</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>pingback<span class="token punctuation">"</span></span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://webmention.io/mxb.dev/xmlrpc<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>link</span> <span class="token attr-name">rel</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>webmention<span class="token punctuation">"</span></span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://webmention.io/mxb.dev/webmention<span class="token punctuation">"</span></span><span class="token punctuation">></span></span></code></pre>
+<h3 id="h-turning-social-media-interactions-into-webmentions"><a class="heading-anchor" href="#h-turning-social-media-interactions-into-webmentions" aria-hidden="true">#</a> Turning social media interactions into webmentions</h3>
+<p>Cool. So that’s all very nice, but the real party is still over at <em>[currently hip social network]</em>, you say. Nobody ever sends me any webmentions.</p>
+<p>Well, while your platform of choice is still around, you can use a tool to automatically turn social media interactions into beautiful open webmentions. <a href="https://brid.gy/">Bridgy</a> is another free service that can monitor your Twitter, Facebook or Instagram activity and send a webmention for every like, reply or repost you receive.</p>
+<p>So if you were to publish a tweet that contains a link back to your site, and somebody writes a comment on it, Bridgy will pick that up and send it as a webmention to your endpoint!</p>
+<p>The resulting entry on webmention.io then looks something like this:</p>
+<pre class="language-json"><code class="language-json">    <span class="token punctuation">{</span><br>      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"entry"</span><span class="token punctuation">,</span><br>      <span class="token property">"author"</span><span class="token operator">:</span> <span class="token punctuation">{</span><br>        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"card"</span><span class="token punctuation">,</span><br>        <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"Sara Soueidan"</span><span class="token punctuation">,</span><br>        <span class="token property">"photo"</span><span class="token operator">:</span> <span class="token string">"https://webmention.io/avatar/pbs.twimg.com/579a474c9b858845a9e64693067e12858642fa71059d542dce6285aed5e10767.jpg"</span><span class="token punctuation">,</span><br>        <span class="token property">"url"</span><span class="token operator">:</span> <span class="token string">"https://sarasoueidan.com"</span><br>      <span class="token punctuation">}</span><span class="token punctuation">,</span><br>      <span class="token property">"url"</span><span class="token operator">:</span> <span class="token string">"https://twitter.com/SaraSoueidan/status/1022009419926839296"</span><span class="token punctuation">,</span><br>      <span class="token property">"published"</span><span class="token operator">:</span> <span class="token string">"2018-07-25T06:43:28+00:00"</span><span class="token punctuation">,</span><br>      <span class="token property">"wm-received"</span><span class="token operator">:</span> <span class="token string">"2018-07-25T07:01:17Z"</span><span class="token punctuation">,</span><br>      <span class="token property">"wm-id"</span><span class="token operator">:</span> <span class="token number">537028</span><span class="token punctuation">,</span><br>      <span class="token property">"wm-source"</span><span class="token operator">:</span> <span class="token string">"https://brid-gy.appspot.com/comment/twitter/mxbck/1022001729389383680/1022009419926839296"</span><span class="token punctuation">,</span><br>      <span class="token property">"wm-target"</span><span class="token operator">:</span> <span class="token string">"https://mxb.dev/blog/layouts-of-tomorrow/"</span><span class="token punctuation">,</span><br>      <span class="token property">"content"</span><span class="token operator">:</span> <span class="token punctuation">{</span><br>        <span class="token property">"content-type"</span><span class="token operator">:</span> <span class="token string">"text/plain"</span><span class="token punctuation">,</span><br>        <span class="token property">"value"</span><span class="token operator">:</span> <span class="token string">"This looks great!"</span><span class="token punctuation">,</span><br>        <span class="token property">"text"</span><span class="token operator">:</span> <span class="token string">"This looks great!"</span><br>      <span class="token punctuation">}</span><span class="token punctuation">,</span><br>      <span class="token property">"in-reply-to"</span><span class="token operator">:</span> <span class="token string">"https://mxb.dev/blog/layouts-of-tomorrow/"</span><span class="token punctuation">,</span><br>      <span class="token property">"wm-property"</span><span class="token operator">:</span> <span class="token string">"in-reply-to"</span><span class="token punctuation">,</span><br>      <span class="token property">"wm-private"</span><span class="token operator">:</span> <span class="token boolean">false</span><br>    <span class="token punctuation">}</span></code></pre>
+<h3 id="h-but-wait-there%E2%80%99s-more"><a class="heading-anchor" href="#h-but-wait-there%E2%80%99s-more" aria-hidden="true">#</a> But wait, there’s more!</h3>
+<p>The beauty of webmentions is that unlike with regular social media, reactions to your content are not limited to users of one site. You can combine comments from Facebook and Twitter with replies people posted on their own blogs. You can mix retweets and shares with mentions of your content in newsletters or forum threads.</p>
+<p>You also have complete control over who and what is allowed in your mentions. Content silos often only allow muting or blocking on your own timeline, everyone else can still see unwanted or abusive @-replies. With webmentions, you’re free to moderate reactions however you see fit. Fuck off, Nazis!</p>
+<h2 id="h-including-webmentions-in-static-sites"><a class="heading-anchor" href="#h-including-webmentions-in-static-sites" aria-hidden="true">#</a> Including webmentions in static sites</h2>
+<p>Once the webmention endpoint is in place, we still need to pull the aggregated data down to our site and display it in a meaningful way.</p>
+<p>The way to do this depends on your setup. Webmention.io offers an <a href="https://github.com/aaronpk/webmention.io#api">API</a> that provides data as a JSON feed, for example. You can query mentions for a specific URL, or get everything associated with a particular domain (allthough the latter is only available to site owners.)</p>
+<p>My site uses <a href="https://11ty.io">Eleventy</a>, which has a conventient way to pull in external data at build time. By providing a <a href="https://www.11ty.io/docs/data-js/#using-js-data-files">custom function</a> that queries the API, Eleventy will fetch my webmentions and expose them to the templates when generating the site.</p>
+<pre class="language-js"><code class="language-js"><span class="token comment">// data/webmentions.js</span><br><span class="token keyword">const</span> <span class="token constant">API_ORIGIN</span> <span class="token operator">=</span> <span class="token string">'https://webmention.io/api/mentions.jf2'</span><br><br>module<span class="token punctuation">.</span><span class="token function-variable function">exports</span> <span class="token operator">=</span> <span class="token keyword">async</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>    <span class="token keyword">const</span> domain <span class="token operator">=</span> <span class="token string">'mxb.dev'</span><br>    <span class="token keyword">const</span> token <span class="token operator">=</span> process<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">WEBMENTION_IO_TOKEN</span><br>    <span class="token keyword">const</span> url <span class="token operator">=</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token constant">API_ORIGIN</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">?domain=</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>domain<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">&amp;token=</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>token<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><br><br>    <span class="token keyword">try</span> <span class="token punctuation">{</span><br>        <span class="token keyword">const</span> response <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">fetch</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><br>        <span class="token keyword">if</span> <span class="token punctuation">(</span>response<span class="token punctuation">.</span>ok<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>            <span class="token keyword">const</span> feed <span class="token operator">=</span> <span class="token keyword">await</span> response<span class="token punctuation">.</span><span class="token function">json</span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>            <span class="token keyword">return</span> feed<br>        <span class="token punctuation">}</span><br>    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>        console<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span><br>        <span class="token keyword">return</span> <span class="token keyword">null</span><br>    <span class="token punctuation">}</span><br><span class="token punctuation">}</span></code></pre>
+<p><em>The feed can now be accessed in the {{ webmentions }} variable.</em></p>
+<p>Here’s <a href="https://github.com/maxboeck/mxb/blob/master/src/data/webmentions.js">the complete function</a> if you’re interested. Other static site generators offer similiar methods to fetch external data.</p>
+<h2 id="h-parsing-and-filtering"><a class="heading-anchor" href="#h-parsing-and-filtering" aria-hidden="true">#</a> Parsing and Filtering</h2>
+<p>Now that the raw data is available, we can mold it into any shape we’d like. For my site, the processing steps look like this:</p>
+<ul>
+<li>Filter the raw data for each post, only include mentions targeting that URL.</li>
+<li>Only allow “mentions” and “replies” in the comment section. Likes and Reposts go somewhere else.</li>
+<li>Remove entries that dont have any content to display.</li>
+<li>Sanitize the output - strip HTML tags, truncate long content, etc.</li>
+</ul>
+<pre class="language-js"><code class="language-js"><span class="token comment">// filters.js</span><br><span class="token keyword">const</span> sanitizeHTML <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'sanitize-html'</span><span class="token punctuation">)</span><br><br><span class="token keyword">function</span> <span class="token function">getWebmentionsForUrl</span><span class="token punctuation">(</span><span class="token parameter">webmentions<span class="token punctuation">,</span> url</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>    <span class="token keyword">const</span> allowedTypes <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'mention-of'</span><span class="token punctuation">,</span> <span class="token string">'in-reply-to'</span><span class="token punctuation">]</span><br><br>    <span class="token keyword">const</span> <span class="token function-variable function">hasRequiredFields</span> <span class="token operator">=</span> <span class="token parameter">entry</span> <span class="token operator">=></span> <span class="token punctuation">{</span><br>        <span class="token keyword">const</span> <span class="token punctuation">{</span> author<span class="token punctuation">,</span> published<span class="token punctuation">,</span> content <span class="token punctuation">}</span> <span class="token operator">=</span> entry<br>        <span class="token keyword">return</span> author<span class="token punctuation">.</span>name <span class="token operator">&amp;&amp;</span> published <span class="token operator">&amp;&amp;</span> content<br>    <span class="token punctuation">}</span><br>    <span class="token keyword">const</span> <span class="token function-variable function">sanitize</span> <span class="token operator">=</span> <span class="token parameter">entry</span> <span class="token operator">=></span> <span class="token punctuation">{</span><br>        <span class="token keyword">const</span> <span class="token punctuation">{</span> content <span class="token punctuation">}</span> <span class="token operator">=</span> entry<br>        <span class="token keyword">if</span> <span class="token punctuation">(</span>content<span class="token punctuation">[</span><span class="token string">'content-type'</span><span class="token punctuation">]</span> <span class="token operator">===</span> <span class="token string">'text/html'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>            content<span class="token punctuation">.</span>value <span class="token operator">=</span> <span class="token function">sanitizeHTML</span><span class="token punctuation">(</span>content<span class="token punctuation">.</span>value<span class="token punctuation">)</span><br>        <span class="token punctuation">}</span><br>        <span class="token keyword">return</span> entry<br>    <span class="token punctuation">}</span><br><br>    <span class="token keyword">return</span> webmentions<br>        <span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token parameter">entry</span> <span class="token operator">=></span> entry<span class="token punctuation">[</span><span class="token string">'wm-target'</span><span class="token punctuation">]</span> <span class="token operator">===</span> url<span class="token punctuation">)</span><br>        <span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token parameter">entry</span> <span class="token operator">=></span> allowedTypes<span class="token punctuation">.</span><span class="token function">includes</span><span class="token punctuation">(</span>entry<span class="token punctuation">[</span><span class="token string">'wm-property'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><br>        <span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>hasRequiredFields<span class="token punctuation">)</span><br>        <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>sanitize<span class="token punctuation">)</span><br><span class="token punctuation">}</span></code></pre>
+<p>In Eleventy’s case, I can set that function as a custom filter to use in my post templates.<br>
+Each post will then loop over its webmentions and output them underneath.</p>
+<pre class="language-html"><code class="language-html"><span class="token comment">&lt;!-- webmentions.njk --></span><br>{% set mentions = webmentions | getWebmentionsForUrl(absoluteUrl) %}<br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ol</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>webmentions<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br>{% for webmention in mentions %}<br>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>webmentions__item<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br>        {% include 'webmention.njk' %}<br>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span><br>{% endfor %}<br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ol</span><span class="token punctuation">></span></span></code></pre>
+<p>You can see the result by scrolling down to the <a href="#webmentions">end of this post</a> (if there are any replies 😉).</p>
+<aside class="signup js-signup-widget" data-nosnippet><div class="signup__front"><h2 class="signup__title">By the way...</h2><div class="signup__desc">I'm running an email list for people interested in personal websites and the IndieWeb. If you enjoy that kind of stuff, you can join here and I'll notify you whenever I publish a new post. No strings attached, unsubscribe anytime.</div><div class="signup__form"><form action="https://dev.us18.list-manage.com/subscribe/post" method="POST" class="form form--signup"><div class="form__body"><input type="hidden" name="u" value="64781452976687d0f4f2ea370"> <input type="hidden" name="id" value="772b9208b5"> <input type="hidden" name="SOURCE" value="/blog/using-webmentions-on-static-sites/"><div class="form__fields"><p class="form__field"><label for="mce-FNAME" class="form__label">First Name (optional)</label> <input type="text" class="form__input" value="" name="FNAME" id="mce-FNAME" placeholder="Alice"></p><p class="form__field"><label for="mce-EMAIL" class="form__label">Email Address</label> <input type="email" class="form__input" value="" name="EMAIL" id="mce-EMAIL" placeholder="alice@awesome.io" required></p></div><div class="sr-only" aria-hidden="true"><input type="text" name="b_64781452976687d0f4f2ea370_772b9208b5" tabindex="-1" value=""></div></div><div class="form__actions"><button type="submit" class="btn btn--primary" name="subscribe">Subscribe</button><div class="form__feedback js-signup-widget-feedback" hidden></div><div class="spinner"><div class="spinner__layercontainer"><div class="spinner__layer spinner__layer--1"><div class="spinner__circle-clipper spinner__left"><div class="spinner__circle"></div></div><div class="spinner__gap-patch"><div class="spinner__circle"></div></div><div class="spinner__circle-clipper spinner__right"><div class="spinner__circle"></div></div></div><div class="spinner__layer spinner__layer--2"><div class="spinner__circle-clipper spinner__left"><div class="spinner__circle"></div></div><div class="spinner__gap-patch"><div class="spinner__circle"></div></div><div class="spinner__circle-clipper spinner__right"><div class="spinner__circle"></div></div></div><div class="spinner__layer spinner__layer--3"><div class="spinner__circle-clipper spinner__left"><div class="spinner__circle"></div></div><div class="spinner__gap-patch"><div class="spinner__circle"></div></div><div class="spinner__circle-clipper spinner__right"><div class="spinner__circle"></div></div></div><div class="spinner__layer spinner__layer--4"><div class="spinner__circle-clipper spinner__left"><div class="spinner__circle"></div></div><div class="spinner__gap-patch"><div class="spinner__circle"></div></div><div class="spinner__circle-clipper spinner__right"><div class="spinner__circle"></div></div></div></div></div></div></form></div></div><div class="signup__back js-signup-backside"></div><div class="signup__icon"><svg class="icon icon--check" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-check"></use></svg></div></aside>
+<h2 id="h-client-side-rendering"><a class="heading-anchor" href="#h-client-side-rendering" aria-hidden="true">#</a> Client-Side Rendering</h2>
+<p>Because static sites are, well, static - it’s possible that new mentions have happened since the last build. To keep the webmention section up-to-date, there’s an extra step we can take: client side rendering.</p>
+<p>Remember I said the webmention.io API can be used to only fetch mentions for a specific URL? That comes in handy now. After the page has loaded, we can fetch the latest mentions for the current URL and re-render the static webmention section with them.</p>
+<p>On my site, I used <a href="https://preactjs.com/">Preact</a> to do just that. It has a very small (~3kB) footprint and lets me use React’s mental model and JSX syntax. It would probably also have been possible to re-use the existing <code>nunjucks</code> templates, but this solution was the easiest and most lightweight for me.</p>
+<p>I essentially used the same logic here as I did in the static build, to ensure matching results. The rendering only starts after the API call returned valid data though - if anything goes wrong or the API is unavailable, there will still be the static content as a fallback.</p>
+<pre class="language-js"><code class="language-js"><span class="token comment">// webmentions/index.js</span><br><span class="token keyword">import</span> <span class="token punctuation">{</span> h<span class="token punctuation">,</span> render <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'preact'</span><br><span class="token keyword">import</span> App <span class="token keyword">from</span> <span class="token string">'./App'</span><br><br><span class="token operator">...</span><br><span class="token keyword">const</span> rootElement <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">'webmentions'</span><span class="token punctuation">)</span><br><span class="token keyword">if</span> <span class="token punctuation">(</span>rootElement<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>    <span class="token function">fetchMentions</span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>        <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token parameter">data</span> <span class="token operator">=></span> <span class="token punctuation">{</span><br>            <span class="token keyword">if</span> <span class="token punctuation">(</span>data<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>                <span class="token function">render</span><span class="token punctuation">(</span><span class="token operator">&lt;</span>App webmentions<span class="token operator">=</span><span class="token punctuation">{</span>data<span class="token punctuation">}</span> <span class="token operator">/</span><span class="token operator">></span><span class="token punctuation">,</span> rootElement<span class="token punctuation">)</span><br>            <span class="token punctuation">}</span><br>        <span class="token punctuation">}</span><span class="token punctuation">)</span><br>        <span class="token punctuation">.</span><span class="token function">catch</span><span class="token punctuation">(</span><span class="token parameter">err</span> <span class="token operator">=></span> <span class="token punctuation">{</span><br>            console<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span><br>        <span class="token punctuation">}</span><span class="token punctuation">)</span><br><span class="token punctuation">}</span></code></pre>
+<div class="callout callout--info"><span class="callout__icon"><svg class="icon icon--info" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-info"></use></svg></span><div class="callout__content"><p>I also made an <a href="https://github.com/maxboeck/eleventy-webmentions">Eleventy Starter Template</a> with basic webmention support, using some of the techniques in this post. Check it out!</p></div></div>
+<p>There are of course still some missing pieces, most notably the ability to send outgoing webmentions to URLs linked to in your own blog posts. <s>I might have to look into that.</s></p>
+<h2 id="h-update-outgoing-webmentions"><a class="heading-anchor" href="#h-update-outgoing-webmentions" aria-hidden="true">#</a> Update: Outgoing Webmentions!</h2>
+<p><a href="https://remysharp.com/">Remy Sharp</a> has recently published a very useful new tool that takes care of handling <strong>outgoing</strong> webmentions for you. <a href="https://webmention.app/">Webmention.app</a> is a platform agnostic service that will check a given URL for links to other sites, discover if they support webmentions, then send a webmention to the target.</p>
+<p>You can use that service in a number of ways, including your own command line. If you host your site on Netlify though, it’s also very straightforward to integrate it <a href="https://webmention.app/docs#how-to-integrate-with-netlify">using deployment webhooks</a>!</p>
+<h2 id="h-jekyll-plugin"><a class="heading-anchor" href="#h-jekyll-plugin" aria-hidden="true">#</a> Jekyll Plugin</h2>
+<p>My implementation was heavily inspired by Aaron Gustafson’s excellent Jekyll Plugin (link below), which goes even further with customization and caching options. If you’re running a Jekyll site, use that for almost instant webmention support 👍.</p>
+<h2 id="h-further-resources"><a class="heading-anchor" href="#h-further-resources" aria-hidden="true">#</a> Further Resources</h2>
+<ul>
+<li><a href="https://www.w3.org/TR/webmention/">W3C Recommendation</a> for the Webmention Standard</li>
+<li><a href="https://github.com/aarongustafson/jekyll-webmention_io">Webmention.io Jekyll Plugin</a> by Aaron Gustafson</li>
+<li><a href="https://indieweb.org/Webmention-developer#IndieWeb_Examples">Indieweb Examples</a> of people using Webmentions on their sites</li>
+</ul>
+
+    </div>
+
+    <div class="post__footer">
+        <div hidden>
+            <a class="u-url" href="https://mxb.dev/blog/using-webmentions-on-static-sites/">Using Webmentions in Eleventy</a>
+            <p class="h-card p-author">
+                <a class="p-name u-url" rel="author" href="https://mxb.dev">Max Böck</a>
+                <img class="u-photo" src="https://mxb.dev/assets/images/avatar2.jpg" />
+            </p>
+        </div>
+
+        
+            <p class="post__footer__info">
+                Published in [code] &sdot; 10 Jan 2019 <br/>
+                <a href="https://github.com/maxboeck/mxb/tree/master/./src/posts/using-webmentions-on-static-sites/2019-01-10-index.md" title="suggest a change to this post by submitting a PR">Edit this Post</a>
+            </p>
+
+            <a
+                href="https://front-end.social/@mxbck"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Follow Max Böck on Mastodon"
+                class="btn btn--mastodon"
+            >
+                <svg class="icon icon--mastodon" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-mastodon"></use></svg> Follow @mxbck
+            </a>
+        
+    </div>
+</article>
+
+
+<div class="postsection">
+    <div class="postsection__header">
+        <h3 class="postsection__title u-mb0">Webmentions</h3>
+        <a href="https://indieweb.org/Webmention" class="postsection__info" target="_blank" rel="noopener noreferrer">
+            <svg class="icon icon--question" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-question"></use></svg> What’s this?
+        </a>
+    </div><div
+    class="webmentions" 
+    id="webmentions"
+    data-url="https://mxb.dev/blog/using-webmentions-on-static-sites/"
+    data-last-fetched=""
+>
+    <div data-render-root>
+        
+            <p class="webmentions__empty">No webmentions yet.</p>
+        
+    </div>
+</div>
+</div>
+
+<div class="postsection">
+    <h3 class="postsection__title">Other things I've written</h3>
+    
+
+<ol class="otherposts">
+    
+        <li class="otherposts__item">
+            <a href="/blog/seven-reasons-why-i-dont-write/" class="otherposts__link ">
+                <span class="otherposts__title">7 Reasons why I don&#39;t write</span>
+                <time class="otherposts__date" datetime="2023-01-30T00:00:00" aria-label=", written 30 Jan 2023">
+                    30 Jan 2023
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/the-indieweb-for-everyone/" class="otherposts__link ">
+                <span class="otherposts__title">The IndieWeb for Everyone</span>
+                <time class="otherposts__date" datetime="2022-11-12T00:00:00" aria-label=", written 12 Nov 2022">
+                    12 Nov 2022
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/make-free-stuff/" class="otherposts__link ">
+                <span class="otherposts__title">Make Free Stuff</span>
+                <time class="otherposts__date" datetime="2022-01-25T00:00:00" aria-label=", written 25 Jan 2022">
+                    25 Jan 2022
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/media-queries-in-times-of-container-queries/" class="otherposts__link ">
+                <span class="otherposts__title">Media Queries in Times of @container</span>
+                <time class="otherposts__date" datetime="2021-06-11T00:00:00" aria-label=", written 11 Jun 2021">
+                    11 Jun 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/container-queries-web-components/" class="otherposts__link ">
+                <span class="otherposts__title">Container Queries in Web Components</span>
+                <time class="otherposts__date" datetime="2021-05-15T00:00:00" aria-label=", written 15 May 2021">
+                    15 May 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/eleventy-asset-pipeline/" class="otherposts__link ">
+                <span class="otherposts__title">Asset Pipelines in Eleventy</span>
+                <time class="otherposts__date" datetime="2021-04-26T00:00:00" aria-label=", written 26 Apr 2021">
+                    26 Apr 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/medium-share-highlight-eleventy/" class="otherposts__link ">
+                <span class="otherposts__title">Medium-Style Share Highlights in Eleventy</span>
+                <time class="otherposts__date" datetime="2021-04-13T00:00:00" aria-label=", written 13 Apr 2021">
+                    13 Apr 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/space-jam/" class="otherposts__link ">
+                <span class="otherposts__title">Space Jam</span>
+                <time class="otherposts__date" datetime="2021-04-04T00:00:00" aria-label=", written 04 Apr 2021">
+                    04 Apr 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/webmention-analytics/" class="otherposts__link ">
+                <span class="otherposts__title">Webmention Analytics</span>
+                <time class="otherposts__date" datetime="2021-02-07T00:00:00" aria-label=", written 07 Feb 2021">
+                    07 Feb 2021
+                </time>
+            </a>
+        </li>
+    
+        <li class="otherposts__item">
+            <a href="/blog/persistent-build-folders-netlify/" class="otherposts__link ">
+                <span class="otherposts__title">Making Persistent Build Folders in Netlify</span>
+                <time class="otherposts__date" datetime="2021-01-05T00:00:00" aria-label=", written 05 Jan 2021">
+                    05 Jan 2021
+                </time>
+            </a>
+        </li>
+    
+</ol>
+</div>
+
+            </main>
+
+            <footer class="footer h-card" role="contentinfo">
+    <div class="footer__inner container">
+        <p class="footer__item">
+            <strong>&copy; 2012&ndash;2023</strong><br />
+            <a class="p-name u-url" rel="me" href="https://mxb.dev">Max Böck</a>
+        </p>
+
+        <p class="footer__item">
+            <strong>Subscribe</strong><br />
+            <a href="/mailinglist">Mailing List</a>
+        </p>
+
+        <p class="footer__item">
+            <strong>Social</strong><br />
+            <a href="https://front-end.social/@mxbck" title="Mastodon" rel="me" >Mastodon</a> / 
+            <a href="https://github.com/maxboeck" title="Github" rel="me">Github</a>
+        </p>
+
+        <p class="footer__item">
+            <strong>Legal</strong><br />
+            <a href="/privacy/">Privacy Policy</a>
+        </p>
+
+        <p class="footer__item">
+            <strong>Links</strong><br />
+            <a href="/blogroll/">Blogroll</a>
+        </p>
+
+        <p class="footer__item footer__item--right u-desktop-only">
+            <a href="https://speedlify.mxb.dev/mxb.dev/" class="footer__speedlify">
+                <speedlify-score speedlify-url="https://speedlify.mxb.dev" hash="7dda0135" score weight></speedlify-score>
+            </a>
+        </p>
+
+        <p class="footer__item footer__item--right">
+            <a href="https://github.com/maxboeck/mxb/tree/master/./src/posts/using-webmentions-on-static-sites/2019-01-10-index.md" class="footer__icon" title="Edit this page on Github">
+                <span class="sr-only">Edit this page on Github</span>
+                <svg class="icon icon--github" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-github"></use></svg>
+            </a>
+            <a href="/feed.xml" class="footer__icon" title="RSS Feed">
+                <span class="sr-only">RSS Feed</span>
+                <svg class="icon icon--feed" role="img" aria-hidden="true" width="24" height="24"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-feed"></use></svg>
+            </a>
+        </p>
+
+    </div>
+</footer>
+        </div>
+
+        
+        <script src="/assets/scripts/main.js" defer></script><script src="/assets/scripts/webmentions.js" defer></script>
+            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></body>
+</html>
