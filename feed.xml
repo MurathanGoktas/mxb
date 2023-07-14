@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>Murathan Goktas</title>
+    <subtitle>Computer scientist and bioinformatician based in Vancouver.</subtitle>
+    <link href="https://murathangoktas.github.io/feed.xml" rel="self" type="application/atom+xml" />
+    <link href="https://murathangoktas.github.io" rel="alternate" type="text/html"/>
+    <author>
+        <name>Murathan Goktas</name>
+    </author>
+    
+    <updated>2023-07-11T00:00:00Z</updated>
+    
+    <id>https://murathangoktas.github.io/</id>
+        <entry>
+            <title>Good Vancouver Bites</title>
+            <link href="https://murathangoktas.github.io/blog/good-vancouver-bites-1/"/>
+            <updated>2023-07-11T00:00:00Z</updated>
+            <id>https://murathangoktas.github.io/blog/good-vancouver-bites-1/</id>
+            <content type="html"><![CDATA[
+                <p>Eating is definitely a huge portion of what I enjoy (and spend). Since my teenage years, I have had a habit to spend nothing of my budget on clothing and spare it for food. It is still the case.</p>
+<p>As such a person I love being in Vancouver. It has a very but very very diverse food scene. You can compare the sushi quality to Japan, and the pasta quality to Italy…</p>
+<p>Here  I just want to document a few of the amazing bites I had in this city. I don’t remember their name and all ingredients, but I will explain as I can.</p>
+<figure>
+  <img src="https://murathangoktas.github.io/blog/good-vancouver-bites-1/food_1.jpg" alt="" />
+  <figcaption>An amazing pasta with wild mushrooms at Ask for Luigi. </figcaption>
+</figure>
+<figure>
+  <img src="https://murathangoktas.github.io/blog/good-vancouver-bites-1/food_2.jpg" alt="" />
+  <figcaption>The sushi assortment at Sushi Hil. This is a very special sushi place that deserves every compliment and sushi aburi sitting a the middle of this row will be one the favourite bites of my life. </figcaption>
+</figure>
+<figure>
+  <img src="https://murathangoktas.github.io/blog/good-vancouver-bites-1/food_3.jpg" alt="" />
+  <figcaption>This butternut squash-filled pasta at Oca Pastifico is one of the top pasta I’ve ever had. As a huge fan of butternut squash, it is hard for me to dislike any food with it. But the freshness, quality and harmony of everything makes this a top-level. </figcaption>
+</figure>
+<figure>
+  <img src="https://murathangoktas.github.io/blog/good-vancouver-bites-1/food_4.jpg" alt="" />
+  <figcaption>This is the bite at Dachi everyone looks for in the summer. After this plate I found the farmer of each plant on the table and bought plenty more for home (really). For how many plates do you do that in your life? </figcaption>
+</figure>
+<figure>
+  <img src="https://murathangoktas.github.io/blog/good-vancouver-bites-1/food_5.jpg" alt="" />
+  <figcaption>The crustiness of the skin and the smoothness of the sauce makes this sablefish a top-class at Labbatoir. Thanks to sablefish, there is at least a local fish that I like. </figcaption>
+</figure>
+<figure>
+  <img src="https://murathangoktas.github.io/blog/good-vancouver-bites-1/food_6.jpg" alt="" />
+  <figcaption> A basic and bold bite at Birds & Beets. It is easy to impress me with this high-quality house-made bread and fermented onions. </figcaption>
+</figure>
+<p>Restaurants:</p>
+<ul>
+<li><a href="https://www.askforluigi.com/">Ask for Luigi</a></li>
+<li><a href="https://www.sushihil.com/">Sushi Hil</a></li>
+<li><a href="https://ocapastificio.com/">Oca Pastifico</a></li>
+<li><a href="https://dachivancouver.com/">Dachi</a></li>
+<li><a href="https://www.labattoir.ca/">Labbatoir</a></li>
+<li><a href="https://www.birdsandbeets.ca/">Birds and Beets</a></li>
+</ul>
+
+            ]]></content>
+        </entry></feed>
