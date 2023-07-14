@@ -45,18 +45,6 @@ layout: base
             </p>
         </div>
 
-        {% if draft %}
-            <p class="post__footer__info">
-                This post is still a draft.<br/>
-                <a href="{{ site.repo }}/tree/master/{{ page.inputPath }}" title="suggest a change to this post by submitting a PR">Suggest a change</a>
-            </p>
-        {% else %}
-            <p class="post__footer__info">
-                Published in [{{ tags | join(', ') }}] &sdot; {{ page.date | readableDate('dd LLL yyyy') }} <br/>
-                <a href="{{ site.repo }}/tree/master/{{ page.inputPath }}" title="suggest a change to this post by submitting a PR">Edit this Post</a>
-            </p>
-
-        {% endif %}
     </div>
 </article>
 
